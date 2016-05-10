@@ -54,13 +54,23 @@ h1 {
   line-height: 52px;
 }
 
-.white-pawn {
+.white {
   color: white;
   transition: transform 0.25s linear;
   z-index: 10;
 }
 
-.white-pawn:active {
+.white:active {
+  transform: translate(60px, 60px);
+}
+
+.black {
+  color: black;
+  transition: transform 0.25s linear;
+  z-index: 10;
+}
+
+.black:active {
   transform: translate(60px, 60px);
 }
 

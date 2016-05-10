@@ -1,16 +1,19 @@
 var Util = require('../util');
 var Piece = require('./piece');
 
-var Queen = function(attrs){
+function Queen(attrs){
   this.color = attrs.color;
   this.board = attrs.board;
   this.pos = attrs.pos;
-};
+
+  var self = this;
+  self.board.addPiece(self);
+}
+
+Util.inherits(Queen, Piece);
 
 Queen.prototype.getMoveDirs = function () {
 
 };
-
-Util.inherits(Queen, Piece);
 
 module.exports = Queen;

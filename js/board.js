@@ -1,7 +1,5 @@
 var Pieces = require('./pieces/pieces.js');
 
-window.Pieces = Pieces;
-
 var Board = function () {
   this.grid = [];
   this.whitePieces = [];
@@ -15,6 +13,15 @@ var Board = function () {
 Board.prototype.placePiece = function (piece) {
   var pos = piece.pos;
   this.grid[pos[0]][pos[1]] = piece;
+};
+
+Board.prototype.addPiece = function (piece) {
+  if (piece.color === "white") {
+    this.whitePieces.push(piece);
+  } else {
+    this.blackPieces.push(piece);
+  }
+  this.placePiece(piece);
 };
 
 Board.prototype.inBounds = function (pos) {

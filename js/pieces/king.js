@@ -1,16 +1,19 @@
 var Util = require('../util');
 var Piece = require('./piece');
 
-var King = function(attrs){
+function King(attrs){
   this.color = attrs.color;
   this.board = attrs.board;
   this.pos = attrs.pos;
-};
+
+  var self = this;
+  self.board.addPiece(self);
+}
+
+Util.inherits(King, Piece);
 
 King.prototype.getMoveDirs = function () {
 
 };
-
-Util.inherits(King, Piece);
 
 module.exports = King;

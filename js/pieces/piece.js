@@ -4,6 +4,10 @@ var Piece = function(attrs){
   this.pos = attrs.pos;
 };
 
+Piece.prototype.addToBoard = function () {
+
+};
+
 Piece.prototype.setPos = function (pos) {
   this.pos = pos;
 };
@@ -17,7 +21,7 @@ Piece.prototype.color = function () {
 };
 
 Piece.prototype.type = function () {
-  return this.toString();
+  return this.constructor.name;
 };
 
 Piece.prototype.validMove = function (pos) {

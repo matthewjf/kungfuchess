@@ -50,7 +50,6 @@
 	  var $root = $('#game');
 	  var game = new Game($root);
 	  game.play();
-	  window.Game = game;
 	});
 
 
@@ -59,8 +58,6 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Pieces = __webpack_require__(4);
-	
-	window.Pieces = Pieces;
 	
 	var Board = function () {
 	  this.grid = [];
@@ -75,6 +72,15 @@
 	Board.prototype.placePiece = function (piece) {
 	  var pos = piece.pos;
 	  this.grid[pos[0]][pos[1]] = piece;
+	};
+	
+	Board.prototype.addPiece = function (piece) {
+	  if (piece.color === "white") {
+	    this.whitePieces.push(piece);
+	  } else {
+	    this.blackPieces.push(piece);
+	  }
+	  this.placePiece(piece);
 	};
 	
 	Board.prototype.inBounds = function (pos) {
@@ -172,11 +178,13 @@
 	
 	var Game = function($root) {
 	  this.board = new Board();
+	  this.board.populate();
 	  this.display = new Display($root, this.board);
+	  this.players = {white: '', black: ''};
 	};
 	
 	Game.prototype.play = function () {
-	  this.display.setGrid();
+	  this.display.setup();
 	};
 	
 	module.exports = Game;
@@ -184,11 +192,18 @@
 
 /***/ },
 /* 3 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
+	var Constants = __webpack_require__(13);
+	
 	var Display = function($root, board) {
 	  this.$root = $root;
 	  this.board = board;
+	};
+	
+	Display.prototype.setup = function () {
+	  this.setGrid();
+	  this.setPieces();
 	};
 	
 	Display.prototype.setGrid = function () {
@@ -204,12 +219,20 @@
 	      $('<li>').addClass('square ' + color).data('pos', pos).appendTo($grid);
 	    }
 	  }
+	};
 	
-	  $grid.append("<div class='white-pawn piece'>♟</div>");
-	  $(".white-pawn").append("<div class='timer'></div>");
-	  $('.white-pawn').hover(function() {
-	    $('.timer').addClass('timer-countdown');
-	  });
+	Display.prototype.setPieces = function () {
+	  console.log(this.board.pieces());
+	  this.renderPiece(this.board.pieces()[0]);
+	};
+	
+	Display.prototype.renderPiece = function (piece) {
+	  var top = -480 + 60 * piece.pos[0];
+	  var left = 60 * piece.pos[1];
+	  var content = Constants[piece.type()];
+	
+	  var $grid = $('#grid');
+	  $('<div>').addClass(piece.color).text(content).css({left: left, top: top}).appendTo($grid);
 	};
 	
 	module.exports = Display;
@@ -243,18 +266,21 @@
 	var Util = __webpack_require__(6);
 	var Piece = __webpack_require__(7);
 	
-	var Pawn = function(attrs){
+	function Pawn(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
-	  this.players = {white: '', black: ''};
-	};
+	
+	  var self = this;
+	  self.board.addPiece(self);
+	}
+	
+	Util.inherits(Pawn, Piece);
 	
 	Pawn.prototype.getMoveDirs = function () {
 	
 	};
 	
-	Util.inherits(Pawn, Piece);
 	
 	module.exports = Pawn;
 
@@ -286,6 +312,10 @@
 	  this.pos = attrs.pos;
 	};
 	
+	Piece.prototype.addToBoard = function () {
+	
+	};
+	
 	Piece.prototype.setPos = function (pos) {
 	  this.pos = pos;
 	};
@@ -299,7 +329,7 @@
 	};
 	
 	Piece.prototype.type = function () {
-	  return this.toString();
+	  return this.constructor.name;
 	};
 	
 	Piece.prototype.validMove = function (pos) {
@@ -320,11 +350,16 @@
 	var Util = __webpack_require__(6);
 	var Piece = __webpack_require__(7);
 	
-	var Bishop = function(attrs){
+	function Bishop(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
-	};
+	
+	  var self = this;
+	  self.board.addPiece(self);
+	}
+	
+	Util.inherits(Bishop, Piece);
 	
 	Bishop.prototype.getMoveDirs = function () {
 	
@@ -340,17 +375,20 @@
 	var Util = __webpack_require__(6);
 	var Piece = __webpack_require__(7);
 	
-	var Knight = function(attrs){
+	function Knight(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
-	};
+	
+	  var self = this;
+	  self.board.addPiece(self);
+	}
+	
+	Util.inherits(Knight, Piece);
 	
 	Knight.prototype.getMoveDirs= function () {
 	
 	};
-	
-	Util.inherits(Knight, Piece);
 	
 	module.exports = Knight;
 
@@ -362,17 +400,20 @@
 	var Util = __webpack_require__(6);
 	var Piece = __webpack_require__(7);
 	
-	var Rook = function(attrs){
+	function Rook(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
-	};
+	
+	  var self = this;
+	  self.board.addPiece(self);
+	}
+	
+	Util.inherits(Rook, Piece);
 	
 	Rook.prototype.getMoveDirs = function () {
 	
 	};
-	
-	Util.inherits(Rook, Piece);
 	
 	module.exports = Rook;
 
@@ -384,17 +425,20 @@
 	var Util = __webpack_require__(6);
 	var Piece = __webpack_require__(7);
 	
-	var Queen = function(attrs){
+	function Queen(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
-	};
+	
+	  var self = this;
+	  self.board.addPiece(self);
+	}
+	
+	Util.inherits(Queen, Piece);
 	
 	Queen.prototype.getMoveDirs = function () {
 	
 	};
-	
-	Util.inherits(Queen, Piece);
 	
 	module.exports = Queen;
 
@@ -406,19 +450,36 @@
 	var Util = __webpack_require__(6);
 	var Piece = __webpack_require__(7);
 	
-	var King = function(attrs){
+	function King(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
-	};
+	
+	  var self = this;
+	  self.board.addPiece(self);
+	}
+	
+	Util.inherits(King, Piece);
 	
 	King.prototype.getMoveDirs = function () {
 	
 	};
 	
-	Util.inherits(King, Piece);
-	
 	module.exports = King;
+
+
+/***/ },
+/* 13 */
+/***/ function(module, exports) {
+
+	module.exports = {
+	  Bishop: "♝",
+	  King: "♚",
+	  Knight: "♞",
+	  Pawn: "♟",
+	  Queen: "♛",
+	  Rook: "♜"
+	};
 
 
 /***/ }

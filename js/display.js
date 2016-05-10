@@ -1,6 +1,13 @@
+var Constants = require('./constants');
+
 var Display = function($root, board) {
   this.$root = $root;
   this.board = board;
+};
+
+Display.prototype.setup = function () {
+  this.setGrid();
+  this.setPieces();
 };
 
 Display.prototype.setGrid = function () {
@@ -16,12 +23,20 @@ Display.prototype.setGrid = function () {
       $('<li>').addClass('square ' + color).data('pos', pos).appendTo($grid);
     }
   }
+};
 
-  $grid.append("<div class='white-pawn piece'>♟</div>");
-  $(".white-pawn").append("<div class='timer'></div>");
-  $('.white-pawn').hover(function() {
-    $('.timer').addClass('timer-countdown');
-  });
+Display.prototype.setPieces = function () {
+  console.log(this.board.pieces());
+  this.renderPiece(this.board.pieces()[0]);
+};
+
+Display.prototype.renderPiece = function (piece) {
+  var top = -480 + 60 * piece.pos[0];
+  var left = 60 * piece.pos[1];
+  var content = Constants[piece.type()];
+
+  var $grid = $('#grid');
+  $('<div>').addClass(piece.color).text(content).css({left: left, top: top}).appendTo($grid);
 };
 
 module.exports = Display;
