@@ -7,7 +7,7 @@ function Rook(attrs){
   this.board = attrs.board;
   this.pos = attrs.pos;
   this.moved = false;
-  this.onCooldown = false;
+  this.isMoveable = true;
 
   var self = this;
   self.board.addPiece(self);

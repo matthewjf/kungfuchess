@@ -44,7 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Game = __webpack_require__(2);
+	var Game = __webpack_require__(1);
 	
 	$(function () {
 	  var $root = $('#game');
@@ -57,149 +57,9 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Pieces = __webpack_require__(4);
-	var Util = __webpack_require__(6);
-	
-	var Board = function () {
-	  this.grid = [];
-	  this.whitePieces = [];
-	  this.blackPieces = [];
-	
-	  for (var i = 0; i < 8; i++) {
-	    this.grid.push([null,null,null,null,null,null,null,null]);
-	  }
-	};
-	
-	Board.prototype.move = function (startPos, endPos, renderCB) {
-	  if (this.isEmpty(startPos)) {
-	    alert('something went wrong');
-	    return console.log('tried to move from empty board pos');
-	  }
-	
-	  if (!Util.includesPos(endPos, this.piece(startPos).moves())) {
-	    alert('something went wrong');
-	    return console.log('tried to move to invalid pos');
-	  }
-	
-	  var piece = this.piece(startPos);
-	  piece.move(endPos, renderCB);
-	};
-	
-	Board.prototype.piece = function (pos) {
-	  return this.grid[pos[0]][pos[1]];
-	};
-	
-	Board.prototype.placePiece = function (piece) {
-	  var pos = piece.pos;
-	  this.grid[pos[0]][pos[1]] = piece;
-	};
-	
-	Board.prototype.clearPiece = function (pos) {
-	  this.grid[pos[0]][pos[1]] = null;
-	};
-	
-	Board.prototype.addPiece = function (piece) {
-	  if (piece.color === "white") {
-	    this.whitePieces.push(piece);
-	  } else {
-	    this.blackPieces.push(piece);
-	  }
-	  this.placePiece(piece);
-	};
-	
-	Board.prototype.inBounds = function (pos) {
-	  return (
-	    pos[0] >= 0 && pos[0] < 8 &&
-	    pos[1] >= 0 && pos[1] < 8
-	  );
-	};
-	
-	Board.prototype.hasPiece = function (pos) {
-	  return Boolean(this.inBounds(pos) && this.grid[pos[0]][pos[1]]);
-	};
-	
-	Board.prototype.isEmpty = function (pos) {
-	  return !this.hasPiece(pos);
-	};
-	
-	Board.prototype.pieces = function (color) {
-	  if (typeof color === 'undefined') {
-	    return this.whitePieces.concat(this.blackPieces);
-	  } else if (color === "white") {
-	    return this.whitePieces;
-	  } else if (color === "black") {
-	    return this.blackPieces;
-	  }
-	};
-	
-	Board.prototype.findKing = function (color) {
-	  var pos;
-	  this.pieces(color).forEach(function (piece) {
-	    if (piece.toString() === "king") {
-	      pos = piece.pos;
-	    }
-	  });
-	  return pos;
-	};
-	
-	Board.prototype.removePiece = function (piece) {
-	  var idx;
-	  if (piece.color === "white") {
-	    idx = this.whitePieces.indexOf(piece);
-	    this.whitePieces.splice(idx,1);
-	  } else {
-	    idx = this.blackPieces.indexOf(piece);
-	    this.blackPieces.splice(idx,1);
-	  }
-	  this.grid[piece.pos[0]][piece.pos[1]] = null;
-	};
-	
-	Board.prototype.populate = function () {
-	  new Pieces.Pawn({color: "black", board: this, pos: [1,0]});
-	  new Pieces.Pawn({color: "black", board: this, pos: [1,1]});
-	  new Pieces.Pawn({color: "black", board: this, pos: [1,2]});
-	  new Pieces.Pawn({color: "black", board: this, pos: [1,3]});
-	  new Pieces.Pawn({color: "black", board: this, pos: [1,4]});
-	  new Pieces.Pawn({color: "black", board: this, pos: [1,5]});
-	  new Pieces.Pawn({color: "black", board: this, pos: [1,6]});
-	  new Pieces.Pawn({color: "black", board: this, pos: [1,7]});
-	  new Pieces.Pawn({color: "white", board: this, pos: [6,0]});
-	  new Pieces.Pawn({color: "white", board: this, pos: [6,1]});
-	  new Pieces.Pawn({color: "white", board: this, pos: [6,2]});
-	  new Pieces.Pawn({color: "white", board: this, pos: [6,3]});
-	  new Pieces.Pawn({color: "white", board: this, pos: [6,4]});
-	  new Pieces.Pawn({color: "white", board: this, pos: [6,5]});
-	  new Pieces.Pawn({color: "white", board: this, pos: [6,6]});
-	  new Pieces.Pawn({color: "white", board: this, pos: [6,7]});
-	  new Pieces.Bishop({color: "white", board: this, pos: [7,2]});
-	  new Pieces.Bishop({color: "white", board: this, pos: [7,5]});
-	  new Pieces.Bishop({color: "black", board: this, pos: [0,2]});
-	  new Pieces.Bishop({color: "black", board: this, pos: [0,5]});
-	  new Pieces.Knight({color: "white", board: this, pos: [7,1]});
-	  new Pieces.Knight({color: "white", board: this, pos: [7,6]});
-	  new Pieces.Knight({color: "black", board: this, pos: [0,1]});
-	  new Pieces.Knight({color: "black", board: this, pos: [0,6]});
-	  new Pieces.Rook({color: "white", board: this, pos: [7,0]});
-	  new Pieces.Rook({color: "white", board: this, pos: [7,7]});
-	  new Pieces.Rook({color: "black", board: this, pos: [0,7]});
-	  new Pieces.Rook({color: "black", board: this, pos: [0,0]});
-	  new Pieces.Queen({color: "white", board: this, pos: [7,3]});
-	  new Pieces.Queen({color: "black", board: this, pos: [0,3]});
-	  new Pieces.King({color: "black", board: this, pos: [0,4]});
-	  new Pieces.King({color: "white", board: this, pos: [7,4]});
-	};
-	
-	
-	module.exports = Board;
-
-
-/***/ },
-/* 2 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Display = __webpack_require__(3);
-	var Board = __webpack_require__(1);
-	var Player = __webpack_require__(15);
+	var Display = __webpack_require__(2);
+	var Board = __webpack_require__(5);
+	var Player = __webpack_require__(16);
 	
 	var Game = function($root) {
 	  this.board = new Board();
@@ -216,11 +76,11 @@
 
 
 /***/ },
-/* 3 */
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Constants = __webpack_require__(13);
-	var Util = __webpack_require__(6);
+	var Constants = __webpack_require__(3);
+	var Util = __webpack_require__(4);
 	
 	var _selected; //// move to player
 	
@@ -256,7 +116,7 @@
 	            parseInt($(event.target).attr('pos')[2])
 	          ];
 	
-	          if (_selected && Util.includesPos(newPos, _selected.moves())) {
+	          if (_selected && _selected.isMoveable && Util.includesPos(newPos, _selected.moves())) {
 	            this.board.move(_selected.pos, newPos, this.renderCB);
 	          }
 	        }.bind(this))
@@ -295,14 +155,15 @@
 	      if (!Util.posEquals(piecePos, piece.pos))
 	        alert('something bad happened, game is broken');
 	
-	      if (piece.color === 'white') {
+	      if (piece.color === 'white' ) {
 	        newPiece.addClass('selected');
 	        _selected = piece;
 	        _selected.moves().forEach(function(pos) {
 	          $('li[pos="' + pos[0] + ',' + pos[1] + '"]').addClass('valid-move');
 	        });
 	      } else if (piece.color === 'black'
-	          && Util.includesPos(piece.pos, _selected.moves())) {
+	          && Util.includesPos(piece.pos, _selected.moves())
+	          && _selected.isMoveable) {
 	        this.board.move(_selected.pos, piece.pos, this.renderCB);
 	      }
 	    }.bind(this))
@@ -360,15 +221,232 @@
 
 
 /***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	module.exports = {
+	  Bishop: "♝",
+	  King: "♚",
+	  Knight: "♞",
+	  Pawn: "♟",
+	  Queen: "♛",
+	  Rook: "♜"
+	};
+
+
+/***/ },
 /* 4 */
+/***/ function(module, exports) {
+
+	var Util = {};
+	
+	Util.inherits = function (subclass, parentClass) {
+	  var Surrogate = function () {};
+	  Surrogate.prototype = parentClass.prototype;
+	  subclass.prototype = new Surrogate();
+	  subclass.prototype.constructor = subclass;
+	};
+	
+	
+	Util.posEquals = function (pos1, pos2) {
+	  if (!pos1 || !pos2) {
+	    return false;
+	  }
+	  return pos1[0] === pos2[0] && pos1[1] === pos2[1];
+	};
+	
+	Util.includesPos = function(pos, array) {
+	  for (var i = 0; i < array.length; i++) {
+	    if (this.posEquals(pos, array[i]))
+	      return true;
+	  }
+	
+	  return false;
+	};
+	
+	
+	module.exports = Util;
+
+
+/***/ },
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Pawn = __webpack_require__(5),
-	    Bishop = __webpack_require__(8),
-	    Knight = __webpack_require__(9),
-	    Rook = __webpack_require__(10),
-	    Queen = __webpack_require__(11),
-	    King = __webpack_require__(12);
+	var Pieces = __webpack_require__(6);
+	var Util = __webpack_require__(4);
+	
+	var Board = function () {
+	  this.grid = [];
+	  this.whitePieces = [];
+	  this.blackPieces = [];
+	
+	  for (var i = 0; i < 8; i++) {
+	    this.grid.push([null,null,null,null,null,null,null,null]);
+	  }
+	};
+	
+	Board.prototype.move = function (startPos, endPos, renderCB) {
+	  if (this.isGameOver()) {
+	    alert('game over');
+	    return console.log('game is over, stop playing');
+	  }
+	
+	  if (this.isEmpty(startPos)) {
+	    alert('something went wrong');
+	    return console.log('tried to move from empty board pos');
+	  }
+	
+	  if (!Util.includesPos(endPos, this.piece(startPos).moves())) {
+	    alert('something went wrong');
+	    return console.log('tried to move to invalid pos');
+	  }
+	
+	  var piece = this.piece(startPos);
+	
+	  if (!piece.isMoveable) {
+	    alert("cant move yet");
+	    return console.log('tried to move piece before timer, something boke');
+	  }
+	
+	  piece.move(endPos, renderCB);
+	};
+	
+	Board.prototype.piece = function (pos) {
+	  return this.grid[pos[0]][pos[1]];
+	};
+	
+	Board.prototype.placePiece = function (piece) {
+	  var pos = piece.pos;
+	  this.grid[pos[0]][pos[1]] = piece;
+	};
+	
+	Board.prototype.addPiece = function (piece) {
+	  if (piece.color === "white") {
+	    this.whitePieces.push(piece);
+	  } else {
+	    this.blackPieces.push(piece);
+	  }
+	  this.placePiece(piece);
+	};
+	
+	Board.prototype.inBounds = function (pos) {
+	  return (
+	    pos[0] >= 0 && pos[0] < 8 &&
+	    pos[1] >= 0 && pos[1] < 8
+	  );
+	};
+	
+	Board.prototype.hasPiece = function (pos) {
+	  return Boolean(this.inBounds(pos) && this.grid[pos[0]][pos[1]]);
+	};
+	
+	Board.prototype.isEmpty = function (pos) {
+	  return !this.hasPiece(pos);
+	};
+	
+	Board.prototype.pieces = function (color) {
+	  if (typeof color === 'undefined') {
+	    return this.whitePieces.concat(this.blackPieces);
+	  } else if (color === "white") {
+	    return this.whitePieces;
+	  } else if (color === "black") {
+	    return this.blackPieces;
+	  }
+	};
+	
+	Board.prototype.findKing = function (color) {
+	  return this.king(color).pos;
+	};
+	
+	Board.prototype.king = function (color) {
+	  var king;
+	  this.pieces(color).forEach(function (piece) {
+	    if (piece.type() === "King") {
+	      king = piece;
+	    }
+	  });
+	  return king;
+	};
+	
+	Board.prototype.isGameOver = function () {
+	  var result = (this.king('white') && this.king('black')) ? false : true;
+	  return result;
+	};
+	
+	Board.prototype.clearPiece = function (pos) {
+	  if (this.hasPiece(pos)) {
+	    var piece = this.piece(pos);
+	    piece.setPos(null);
+	  }
+	
+	  this.grid[pos[0]][pos[1]] = null;
+	};
+	
+	Board.prototype.removePiece = function (pos) {
+	  if (this.hasPiece(pos)) {
+	    var piece = this.piece(pos);
+	    var idx;
+	    if (piece.color === "white") {
+	      idx = this.whitePieces.indexOf(piece);
+	      this.whitePieces.splice(idx,1);
+	    } else {
+	      idx = this.blackPieces.indexOf(piece);
+	      this.blackPieces.splice(idx,1);
+	    }
+	    this.grid[piece.pos[0]][piece.pos[1]] = null;
+	    piece.setPos(null);
+	  }
+	};
+	
+	Board.prototype.populate = function () {
+	  new Pieces.Pawn({color: "black", board: this, pos: [1,0]});
+	  new Pieces.Pawn({color: "black", board: this, pos: [1,1]});
+	  new Pieces.Pawn({color: "black", board: this, pos: [1,2]});
+	  new Pieces.Pawn({color: "black", board: this, pos: [1,3]});
+	  new Pieces.Pawn({color: "black", board: this, pos: [1,4]});
+	  new Pieces.Pawn({color: "black", board: this, pos: [1,5]});
+	  new Pieces.Pawn({color: "black", board: this, pos: [1,6]});
+	  new Pieces.Pawn({color: "black", board: this, pos: [1,7]});
+	  new Pieces.Pawn({color: "white", board: this, pos: [6,0]});
+	  new Pieces.Pawn({color: "white", board: this, pos: [6,1]});
+	  new Pieces.Pawn({color: "white", board: this, pos: [6,2]});
+	  new Pieces.Pawn({color: "white", board: this, pos: [6,3]});
+	  new Pieces.Pawn({color: "white", board: this, pos: [6,4]});
+	  new Pieces.Pawn({color: "white", board: this, pos: [6,5]});
+	  new Pieces.Pawn({color: "white", board: this, pos: [6,6]});
+	  new Pieces.Pawn({color: "white", board: this, pos: [6,7]});
+	  new Pieces.Bishop({color: "white", board: this, pos: [7,2]});
+	  new Pieces.Bishop({color: "white", board: this, pos: [7,5]});
+	  new Pieces.Bishop({color: "black", board: this, pos: [0,2]});
+	  new Pieces.Bishop({color: "black", board: this, pos: [0,5]});
+	  new Pieces.Knight({color: "white", board: this, pos: [7,1]});
+	  new Pieces.Knight({color: "white", board: this, pos: [7,6]});
+	  new Pieces.Knight({color: "black", board: this, pos: [0,1]});
+	  new Pieces.Knight({color: "black", board: this, pos: [0,6]});
+	  new Pieces.Rook({color: "white", board: this, pos: [7,0]});
+	  new Pieces.Rook({color: "white", board: this, pos: [7,7]});
+	  new Pieces.Rook({color: "black", board: this, pos: [0,7]});
+	  new Pieces.Rook({color: "black", board: this, pos: [0,0]});
+	  new Pieces.Queen({color: "white", board: this, pos: [7,3]});
+	  new Pieces.Queen({color: "black", board: this, pos: [0,3]});
+	  new Pieces.King({color: "black", board: this, pos: [0,4]});
+	  new Pieces.King({color: "white", board: this, pos: [7,4]});
+	};
+	
+	
+	module.exports = Board;
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Pawn = __webpack_require__(7),
+	    Bishop = __webpack_require__(10),
+	    Knight = __webpack_require__(12),
+	    Rook = __webpack_require__(13),
+	    Queen = __webpack_require__(14),
+	    King = __webpack_require__(15);
 	
 	module.exports = {
 	  Pawn: Pawn,
@@ -381,18 +459,18 @@
 
 
 /***/ },
-/* 5 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Util = __webpack_require__(6);
-	var Piece = __webpack_require__(7);
-	var Step = __webpack_require__(16);
+	var Util = __webpack_require__(4);
+	var Piece = __webpack_require__(8);
+	var Step = __webpack_require__(9);
 	
 	function Pawn(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
-	  this.onCooldown = false;
+	  this.isMoveable = true;
 	
 	  var self = this;
 	  self.board.addPiece(self);
@@ -439,50 +517,16 @@
 
 
 /***/ },
-/* 6 */
-/***/ function(module, exports) {
-
-	var Util = {};
-	
-	Util.inherits = function (subclass, parentClass) {
-	  var Surrogate = function () {};
-	  Surrogate.prototype = parentClass.prototype;
-	  subclass.prototype = new Surrogate();
-	  subclass.prototype.constructor = subclass;
-	};
-	
-	
-	Util.posEquals = function (pos1, pos2) {
-	  if (!pos1 || !pos2) {
-	    return false;
-	  }
-	  return pos1[0] === pos2[0] && pos1[1] === pos2[1];
-	};
-	
-	Util.includesPos = function(pos, array) {
-	  for (var i = 0; i < array.length; i++) {
-	    if (this.posEquals(pos, array[i]))
-	      return true;
-	  }
-	
-	  return false;
-	};
-	
-	
-	module.exports = Util;
-
-
-/***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Util = __webpack_require__(6);
+	var Util = __webpack_require__(4);
 	
 	var Piece = function(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
-	  this.isMoveable = false;
+	  this.isMoveable = true;
 	};
 	
 	Piece.prototype.setPos = function (pos) {
@@ -518,15 +562,22 @@
 	    renderCB(this.pos, newPos, stopMoving);
 	
 	    this.board.clearPiece(this.pos);
-	    this.board.clearPiece(newPos);
+	    this.board.removePiece(newPos);
 	
 	    this.setPos(newPos);
 	    this.board.placePiece(this);
 	
 	    this.moved = true;
 	
+	    if (this.board.isGameOver()) {
+	      alert('game over');
+	    }
+	
 	    if (stopMoving) {
-	      this.isMoveable = true;
+	      this.isMoveable = false;
+	      setTimeout(function() {
+	        this.isMoveable = true;
+	      }.bind(this), 3500);
 	      return;
 	    } else {
 	      setTimeout(function(){
@@ -543,18 +594,42 @@
 
 
 /***/ },
-/* 8 */
+/* 9 */
+/***/ function(module, exports) {
+
+	module.exports = {
+	  moves: function () {
+	    var moves = [];
+	    var board = this.board;
+	    var dirs = this.getMoveDirs();
+	    for (var i = 0; i < dirs.length; i++) {
+	      var move = [this.pos[0] + dirs[i][0], this.pos[1] + dirs[i][1]];
+	      if (!board.inBounds(move)) {
+	        continue;
+	      } else if (board.hasPiece(move) && board.piece(move).color !== this.color) {
+	        moves.push(move);
+	      } else if (!board.hasPiece(move)) {
+	        moves.push(move);
+	      }
+	    }
+	    return moves;
+	  }
+	};
+
+
+/***/ },
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Util = __webpack_require__(6);
-	var Piece = __webpack_require__(7);
-	var Slide = __webpack_require__(14);
+	var Util = __webpack_require__(4);
+	var Piece = __webpack_require__(8);
+	var Slide = __webpack_require__(11);
 	
 	function Bishop(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
-	  this.onCooldown = false;
+	  this.isMoveable = true;
 	
 	  var self = this;
 	  self.board.addPiece(self);
@@ -572,18 +647,47 @@
 
 
 /***/ },
-/* 9 */
+/* 11 */
+/***/ function(module, exports) {
+
+	module.exports = {
+	  moves: function () {
+	    var moves = [];
+	    var board = this.board;
+	    var dirs = this.getMoveDirs();
+	    for (var i = 0; i < dirs.length; i++) {
+	      for (var d = 1; d < 8; d++) {
+	        var pos = [this.pos[0] + (dirs[i][0] * d), this.pos[1] + (dirs[i][1] * d)];
+	        if (!this.board.inBounds(pos)) {
+	          break;
+	        } else if (this.board.inBounds(pos) && !this.board.hasPiece(pos)) {
+	          moves.push(pos);
+	        } else if (this.board.hasPiece(pos) && this.board.piece(pos).color !== this.color) {
+	          moves.push(pos);
+	          break;
+	        } else {
+	          break;
+	        }
+	      }
+	    }
+	    return moves;
+	  }
+	};
+
+
+/***/ },
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Util = __webpack_require__(6);
-	var Piece = __webpack_require__(7);
-	var Step = __webpack_require__(16);
+	var Util = __webpack_require__(4);
+	var Piece = __webpack_require__(8);
+	var Step = __webpack_require__(9);
 	
 	function Knight(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
-	  this.onCooldown = false;
+	  this.isMoveable = true;
 	
 	  var self = this;
 	  self.board.addPiece(self);
@@ -606,27 +710,37 @@
 	  renderCB(this.pos, targetPos, true);
 	
 	  this.board.clearPiece(this.pos);
+	  this.board.removePiece(targetPos);
 	  this.setPos(targetPos);
 	  this.board.placePiece(this);
+	
+	  if (this.board.isGameOver()) {
+	    alert('game over');
+	  }
+	
+	  this.isMoveable = false;
+	  setTimeout(function() {
+	    this.isMoveable = true;
+	  }.bind(this), 3500);
 	};
 	
 	module.exports = Knight;
 
 
 /***/ },
-/* 10 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Util = __webpack_require__(6);
-	var Piece = __webpack_require__(7);
-	var Slide = __webpack_require__(14);
+	var Util = __webpack_require__(4);
+	var Piece = __webpack_require__(8);
+	var Slide = __webpack_require__(11);
 	
 	function Rook(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
 	  this.moved = false;
-	  this.onCooldown = false;
+	  this.isMoveable = true;
 	
 	  var self = this;
 	  self.board.addPiece(self);
@@ -644,18 +758,18 @@
 
 
 /***/ },
-/* 11 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Util = __webpack_require__(6);
-	var Piece = __webpack_require__(7);
-	var Slide = __webpack_require__(14);
+	var Util = __webpack_require__(4);
+	var Piece = __webpack_require__(8);
+	var Slide = __webpack_require__(11);
 	
 	function Queen(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
-	  this.onCooldown = false;
+	  this.isMoveable = true;
 	
 	  var self = this;
 	  self.board.addPiece(self);
@@ -673,19 +787,19 @@
 
 
 /***/ },
-/* 12 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Util = __webpack_require__(6);
-	var Piece = __webpack_require__(7);
-	var Step = __webpack_require__(16);
+	var Util = __webpack_require__(4);
+	var Piece = __webpack_require__(8);
+	var Step = __webpack_require__(9);
 	
 	function King(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
 	  this.moved = false;
-	  this.onCooldown = false;
+	  this.isMoveable = true;
 	
 	  var self = this;
 	  self.board.addPiece(self);
@@ -727,11 +841,31 @@
 	King.prototype.move = function (targetPos, renderCB) {
 	  var dx = Math.abs(targetPos[0] - this.pos[0]);
 	  var dy = Math.abs(targetPos[1] - this.pos[1]);
-	  var leftDir = targetPos[1] === 2 ? true : false;
-	  if (dx + dy > 1) {
-	    setTimeout(function(dir) {
+	  var left = targetPos[1] === 2 ? true : false;
+	  var b = this.board;
+	  var rook;
+	  if (left) {
+	    rook = this.board.piece([this.pos[0], 0]);
+	  } else {
+	    rook = this.board.piece([this.pos[0], 7]);
+	  }
 	
-	    });
+	  if (dx + dy > 1) {
+	    setTimeout(function() {
+	      var newPos = left ? [rook.pos[0], 3] : [rook.pos[0], 5];
+	      renderCB(rook.pos, newPos, true);
+	      b.clearPiece(rook.pos);
+	      if (left)
+	        rook.setPos([rook.pos[0], 3]);
+	      else
+	        rook.setPos([rook.pos[0], 5]);
+	      b.placePiece(rook);
+	
+	      rook.isMoveable = false;
+	      setTimeout(function() {
+	        rook.isMoveable = true;
+	      }, 3500);
+	    }, 500);
 	  }
 	  Piece.prototype.move.call(this, targetPos, renderCB);
 	};
@@ -740,50 +874,7 @@
 
 
 /***/ },
-/* 13 */
-/***/ function(module, exports) {
-
-	module.exports = {
-	  Bishop: "♝",
-	  King: "♚",
-	  Knight: "♞",
-	  Pawn: "♟",
-	  Queen: "♛",
-	  Rook: "♜"
-	};
-
-
-/***/ },
-/* 14 */
-/***/ function(module, exports) {
-
-	module.exports = {
-	  moves: function () {
-	    var moves = [];
-	    var board = this.board;
-	    var dirs = this.getMoveDirs();
-	    for (var i = 0; i < dirs.length; i++) {
-	      for (var d = 1; d < 8; d++) {
-	        var pos = [this.pos[0] + (dirs[i][0] * d), this.pos[1] + (dirs[i][1] * d)];
-	        if (!this.board.inBounds(pos)) {
-	          break;
-	        } else if (this.board.inBounds(pos) && !this.board.hasPiece(pos)) {
-	          moves.push(pos);
-	        } else if (this.board.hasPiece(pos) && this.board.piece(pos).color !== this.color) {
-	          moves.push(pos);
-	          break;
-	        } else {
-	          break;
-	        }
-	      }
-	    }
-	    return moves;
-	  }
-	};
-
-
-/***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports) {
 
 	function Player(board) {
@@ -801,30 +892,6 @@
 	};
 	
 	module.exports = Player;
-
-
-/***/ },
-/* 16 */
-/***/ function(module, exports) {
-
-	module.exports = {
-	  moves: function () {
-	    var moves = [];
-	    var board = this.board;
-	    var dirs = this.getMoveDirs();
-	    for (var i = 0; i < dirs.length; i++) {
-	      var move = [this.pos[0] + dirs[i][0], this.pos[1] + dirs[i][1]];
-	      if (!board.inBounds(move)) {
-	        continue;
-	      } else if (board.hasPiece(move) && board.piece(move).color !== this.color) {
-	        moves.push(move);
-	      } else if (!board.hasPiece(move)) {
-	        moves.push(move);
-	      }
-	    }
-	    return moves;
-	  }
-	};
 
 
 /***/ }

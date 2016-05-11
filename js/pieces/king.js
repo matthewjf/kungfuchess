@@ -7,7 +7,7 @@ function King(attrs){
   this.board = attrs.board;
   this.pos = attrs.pos;
   this.moved = false;
-  this.onCooldown = false;
+  this.isMoveable = true;
 
   var self = this;
   self.board.addPiece(self);
@@ -49,11 +49,31 @@ King.prototype.getMoveDirs = function () {
 King.prototype.move = function (targetPos, renderCB) {
   var dx = Math.abs(targetPos[0] - this.pos[0]);
   var dy = Math.abs(targetPos[1] - this.pos[1]);
-  var leftDir = targetPos[1] === 2 ? true : false;
-  if (dx + dy > 1) {
-    setTimeout(function(dir) {
+  var left = targetPos[1] === 2 ? true : false;
+  var b = this.board;
+  var rook;
+  if (left) {
+    rook = this.board.piece([this.pos[0], 0]);
+  } else {
+    rook = this.board.piece([this.pos[0], 7]);
+  }
 
-    });
+  if (dx + dy > 1) {
+    setTimeout(function() {
+      var newPos = left ? [rook.pos[0], 3] : [rook.pos[0], 5];
+      renderCB(rook.pos, newPos, true);
+      b.clearPiece(rook.pos);
+      if (left)
+        rook.setPos([rook.pos[0], 3]);
+      else
+        rook.setPos([rook.pos[0], 5]);
+      b.placePiece(rook);
+
+      rook.isMoveable = false;
+      setTimeout(function() {
+        rook.isMoveable = true;
+      }, 3500);
+    }, 500);
   }
   Piece.prototype.move.call(this, targetPos, renderCB);
 };

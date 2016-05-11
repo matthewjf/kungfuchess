@@ -12,6 +12,11 @@ var Board = function () {
 };
 
 Board.prototype.move = function (startPos, endPos, renderCB) {
+  if (this.isGameOver()) {
+    alert('game over');
+    return console.log('game is over, stop playing');
+  }
+
   if (this.isEmpty(startPos)) {
     alert('something went wrong');
     return console.log('tried to move from empty board pos');
@@ -23,6 +28,12 @@ Board.prototype.move = function (startPos, endPos, renderCB) {
   }
 
   var piece = this.piece(startPos);
+
+  if (!piece.isMoveable) {
+    alert("cant move yet");
+    return console.log('tried to move piece before timer, something boke');
+  }
+
   piece.move(endPos, renderCB);
 };
 
@@ -33,10 +44,6 @@ Board.prototype.piece = function (pos) {
 Board.prototype.placePiece = function (piece) {
   var pos = piece.pos;
   this.grid[pos[0]][pos[1]] = piece;
-};
-
-Board.prototype.clearPiece = function (pos) {
-  this.grid[pos[0]][pos[1]] = null;
 };
 
 Board.prototype.addPiece = function (piece) {
@@ -74,25 +81,47 @@ Board.prototype.pieces = function (color) {
 };
 
 Board.prototype.findKing = function (color) {
-  var pos;
-  this.pieces(color).forEach(function (piece) {
-    if (piece.toString() === "king") {
-      pos = piece.pos;
-    }
-  });
-  return pos;
+  return this.king(color).pos;
 };
 
-Board.prototype.removePiece = function (piece) {
-  var idx;
-  if (piece.color === "white") {
-    idx = this.whitePieces.indexOf(piece);
-    this.whitePieces.splice(idx,1);
-  } else {
-    idx = this.blackPieces.indexOf(piece);
-    this.blackPieces.splice(idx,1);
+Board.prototype.king = function (color) {
+  var king;
+  this.pieces(color).forEach(function (piece) {
+    if (piece.type() === "King") {
+      king = piece;
+    }
+  });
+  return king;
+};
+
+Board.prototype.isGameOver = function () {
+  var result = (this.king('white') && this.king('black')) ? false : true;
+  return result;
+};
+
+Board.prototype.clearPiece = function (pos) {
+  if (this.hasPiece(pos)) {
+    var piece = this.piece(pos);
+    piece.setPos(null);
   }
-  this.grid[piece.pos[0]][piece.pos[1]] = null;
+
+  this.grid[pos[0]][pos[1]] = null;
+};
+
+Board.prototype.removePiece = function (pos) {
+  if (this.hasPiece(pos)) {
+    var piece = this.piece(pos);
+    var idx;
+    if (piece.color === "white") {
+      idx = this.whitePieces.indexOf(piece);
+      this.whitePieces.splice(idx,1);
+    } else {
+      idx = this.blackPieces.indexOf(piece);
+      this.blackPieces.splice(idx,1);
+    }
+    this.grid[piece.pos[0]][piece.pos[1]] = null;
+    piece.setPos(null);
+  }
 };
 
 Board.prototype.populate = function () {

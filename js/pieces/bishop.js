@@ -6,7 +6,7 @@ function Bishop(attrs){
   this.color = attrs.color;
   this.board = attrs.board;
   this.pos = attrs.pos;
-  this.onCooldown = false;
+  this.isMoveable = true;
 
   var self = this;
   self.board.addPiece(self);

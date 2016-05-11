@@ -4,7 +4,7 @@ var Piece = function(attrs){
   this.color = attrs.color;
   this.board = attrs.board;
   this.pos = attrs.pos;
-  this.isMoveable = false;
+  this.isMoveable = true;
 };
 
 Piece.prototype.setPos = function (pos) {
@@ -40,15 +40,22 @@ Piece.prototype.move = function (targetPos, renderCB) {
     renderCB(this.pos, newPos, stopMoving);
 
     this.board.clearPiece(this.pos);
-    this.board.clearPiece(newPos);
+    this.board.removePiece(newPos);
 
     this.setPos(newPos);
     this.board.placePiece(this);
 
     this.moved = true;
 
+    if (this.board.isGameOver()) {
+      alert('game over');
+    }
+
     if (stopMoving) {
-      this.isMoveable = true;
+      this.isMoveable = false;
+      setTimeout(function() {
+        this.isMoveable = true;
+      }.bind(this), 3500);
       return;
     } else {
       setTimeout(function(){

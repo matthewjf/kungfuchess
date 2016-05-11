@@ -35,7 +35,7 @@ Display.prototype.setGrid = function () {
             parseInt($(event.target).attr('pos')[2])
           ];
 
-          if (_selected && Util.includesPos(newPos, _selected.moves())) {
+          if (_selected && _selected.isMoveable && Util.includesPos(newPos, _selected.moves())) {
             this.board.move(_selected.pos, newPos, this.renderCB);
           }
         }.bind(this))
@@ -74,14 +74,15 @@ Display.prototype.renderPiece = function (piece) {
       if (!Util.posEquals(piecePos, piece.pos))
         alert('something bad happened, game is broken');
 
-      if (piece.color === 'white') {
+      if (piece.color === 'white' ) {
         newPiece.addClass('selected');
         _selected = piece;
         _selected.moves().forEach(function(pos) {
           $('li[pos="' + pos[0] + ',' + pos[1] + '"]').addClass('valid-move');
         });
       } else if (piece.color === 'black'
-          && Util.includesPos(piece.pos, _selected.moves())) {
+          && Util.includesPos(piece.pos, _selected.moves())
+          && _selected.isMoveable) {
         this.board.move(_selected.pos, piece.pos, this.renderCB);
       }
     }.bind(this))
