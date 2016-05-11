@@ -127,7 +127,7 @@ function renderTimer (pos) {
     $piece.children().css({height: '0px', marginTop: '60px'});
     setTimeout(function() {
       $piece.children().remove();
-    },3000);
+    }, Constants.Timer);
   },250);
 }
 

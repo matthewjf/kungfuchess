@@ -4,5 +4,6 @@ module.exports = {
   Knight: "♞",
   Pawn: "♟",
   Queen: "♛",
-  Rook: "♜"
+  Rook: "♜",
+  Timer: 4000
 };

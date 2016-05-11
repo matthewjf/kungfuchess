@@ -49,6 +49,7 @@
 	$(function () {
 	  var $root = $('#game');
 	  var game = new Game($root);
+	  $root.append('<input type="button" value="test" />');
 	  game.play();
 	});
 
@@ -208,7 +209,7 @@
 	    $piece.children().css({height: '0px', marginTop: '60px'});
 	    setTimeout(function() {
 	      $piece.children().remove();
-	    },3000);
+	    }, Constants.Timer);
 	  },250);
 	}
 	
@@ -230,7 +231,8 @@
 	  Knight: "♞",
 	  Pawn: "♟",
 	  Queen: "♛",
-	  Rook: "♜"
+	  Rook: "♜",
+	  Timer: 4000
 	};
 
 
@@ -521,6 +523,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Util = __webpack_require__(4);
+	var Constants = __webpack_require__(3);
 	
 	var Piece = function(attrs){
 	  this.color = attrs.color;
@@ -577,7 +580,7 @@
 	      this.isMoveable = false;
 	      setTimeout(function() {
 	        this.isMoveable = true;
-	      }.bind(this), 3500);
+	      }.bind(this), Constants.Timer + 500);
 	      return;
 	    } else {
 	      setTimeout(function(){
@@ -682,6 +685,7 @@
 	var Util = __webpack_require__(4);
 	var Piece = __webpack_require__(8);
 	var Step = __webpack_require__(9);
+	var Constants = __webpack_require__(3);
 	
 	function Knight(attrs){
 	  this.color = attrs.color;
@@ -721,7 +725,7 @@
 	  this.isMoveable = false;
 	  setTimeout(function() {
 	    this.isMoveable = true;
-	  }.bind(this), 3500);
+	  }.bind(this), Constants.Timer + 500);
 	};
 	
 	module.exports = Knight;
@@ -793,6 +797,7 @@
 	var Util = __webpack_require__(4);
 	var Piece = __webpack_require__(8);
 	var Step = __webpack_require__(9);
+	var Constants = __webpack_require__(3);
 	
 	function King(attrs){
 	  this.color = attrs.color;
@@ -865,7 +870,7 @@
 	      rook.isMoveable = false;
 	      setTimeout(function() {
 	        rook.isMoveable = true;
-	      }, 3500);
+	      }, Constants.Timer + 500);
 	    }, 500);
 	  }
 	  Piece.prototype.move.call(this, targetPos, renderCB);

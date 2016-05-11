@@ -1,4 +1,5 @@
 var Util = require('../util');
+var Constants = require('../constants');
 
 var Piece = function(attrs){
   this.color = attrs.color;
@@ -55,7 +56,7 @@ Piece.prototype.move = function (targetPos, renderCB) {
       this.isMoveable = false;
       setTimeout(function() {
         this.isMoveable = true;
-      }.bind(this), 3500);
+      }.bind(this), Constants.Timer + 500);
       return;
     } else {
       setTimeout(function(){

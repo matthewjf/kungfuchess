@@ -1,6 +1,7 @@
 var Util = require('../util');
 var Piece = require('./piece');
 var Step = require('./step');
+var Constants = require('../constants');
 
 function Knight(attrs){
   this.color = attrs.color;
@@ -40,7 +41,7 @@ Knight.prototype.move = function (targetPos, renderCB) {
   this.isMoveable = false;
   setTimeout(function() {
     this.isMoveable = true;
-  }.bind(this), 3500);
+  }.bind(this), Constants.Timer + 500);
 };
 
 module.exports = Knight;

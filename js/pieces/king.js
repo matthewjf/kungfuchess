@@ -1,6 +1,7 @@
 var Util = require('../util');
 var Piece = require('./piece');
 var Step = require('./step');
+var Constants = require('../constants');
 
 function King(attrs){
   this.color = attrs.color;
@@ -73,7 +74,7 @@ King.prototype.move = function (targetPos, renderCB) {
       rook.isMoveable = false;
       setTimeout(function() {
         rook.isMoveable = true;
-      }, 3500);
+      }, Constants.Timer + 500);
     }, 500);
   }
   Piece.prototype.move.call(this, targetPos, renderCB);
