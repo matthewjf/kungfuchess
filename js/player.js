@@ -1,14 +1,13 @@
 function Player(board) {
   this.selected = undefined;
-  this.clickHandlers();
+  this.addListeners();
   this.board = board;
 }
 
-Player.prototype.clickHandlers = function () {
+Player.prototype.addListeners = function () {
   $('#grid').click(function(event) {
-    // this.selected = undefined;
-    debugger;
-    console.log(event.target.attr('pos'));
+    // move logic here
+    // console.log($(event.target).attr('pos'));
   });
 };
 

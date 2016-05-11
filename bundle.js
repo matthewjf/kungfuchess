@@ -49,8 +49,17 @@
 	$(function () {
 	  var $root = $('#game');
 	  var game = new Game($root);
-	  game.play();
-	  $('#game-controls').append('<input type="button" value="test" />');
+	
+	  var $controls = $('#game-controls');
+	  $('<input id="start" type="button" value="start" />').click(function(event){
+	    game.play();
+	  }).appendTo($controls);
+	  $('<input id="restart" type="button" value="restart" />').click(function(){
+	    game = new Game($root);
+	  }).appendTo($controls);
+	  $('<input id="info" type="button" value="info" />').click(function(){
+	
+	  }).appendTo($controls);
 	});
 
 
@@ -885,15 +894,14 @@
 
 	function Player(board) {
 	  this.selected = undefined;
-	  this.clickHandlers();
+	  this.addListeners();
 	  this.board = board;
 	}
 	
-	Player.prototype.clickHandlers = function () {
+	Player.prototype.addListeners = function () {
 	  $('#grid').click(function(event) {
-	    // this.selected = undefined;
-	    debugger;
-	    console.log(event.target.attr('pos'));
+	    // move logic here
+	    // console.log($(event.target).attr('pos'));
 	  });
 	};
 	

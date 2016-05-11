@@ -10,7 +10,7 @@ body {
 
 h1 {
   font-family: 'Indie Flower', cursive;
-  color: white;
+  color: #29B6F6;
   text-align: center;
   font-size: 48px;
   background-color: hsl(0,0%,26%);
@@ -45,23 +45,64 @@ h1 {
   padding: 1rem;
   box-sizing: border-box;
   background-color: hsl(0,0%,26%);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
 }
 
 #game-controls input {
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
-  background-color: #039BE5;
   color: white;
   border: none;
   border-radius: 2px;
   padding: 0.5em 1em;
   text-transform: uppercase;
+  flex: 1 1 33%;
+  margin: 0 0.5em;
 }
 
 #game-controls input:focus {
   border: 0px;
   outline: none;
 }
+
+#info {
+  background-color: hsl(201, 98%, 41%);
+}
+
+#info:hover {
+  background-color: hsl(201, 98%, 49%);
+}
+
+#info:active {
+  background-color: hsl(201, 98%, 33%);
+}
+
+#start {
+  background-color: hsl(123, 43%, 39%);
+}
+
+#start:hover {
+  background-color: hsl(123, 43%, 47%);
+}
+
+#start:active {
+  background-color: hsl(123, 43%, 31%);
+}
+#restart {
+  background-color: hsl(1, 77%, 55%);
+}
+
+#restart:hover {
+  background-color: hsl(1, 77%, 63%)
+}
+
+#restart:active {
+  background-color: hsl(1, 77%, 47%)
+}
+
 
 .square {
   box-sizing: border-box;
@@ -70,7 +111,10 @@ h1 {
 }
 
 .white {
-  background-color: #B0BEC5;
+  /*background-color: #B0BEC5;*/
+  /*background-color: #BDBDBD;*/
+  background-color: #90A4AE;
+  /*background-color: #78909C;*/
 }
 
 .black {
@@ -99,7 +143,7 @@ h1 {
 }
 
 .white-piece {
-  color: 	hsl(36,60%,85%);
+  color: 	hsl(45,40%,92%);
   transition: top 0.25s linear, left 0.25s linear;
   z-index: 10;
 }
