@@ -1,18 +1,17 @@
 module.exports = {
   moves: function () {
     var moves = [];
-    var move;
     var board = this.board;
     var dirs = this.getMoveDirs();
     for (var i = 0; i < dirs.length; i++) {
       for (var d = 1; d < 8; d++) {
-        move = [this.pos[0] + (dirs[i][0] * d), this.pos[1] + (dirs[i][1] * d)];
-        if (!this.board.inBounds(move)) {
+        var pos = [this.pos[0] + (dirs[i][0] * d), this.pos[1] + (dirs[i][1] * d)];
+        if (!this.board.inBounds(pos)) {
           break;
-        } else if (this.board.inBounds(move) && !this.board.hasPiece(move)) {
-          moves.push(move);
-        } else if (this.board.hasPiece(move) && this.board.piece(move).color !== this.color) {
-          moves.push(move);
+        } else if (this.board.inBounds(pos) && !this.board.hasPiece(pos)) {
+          moves.push(pos);
+        } else if (this.board.hasPiece(pos) && this.board.piece(pos).color !== this.color) {
+          moves.push(pos);
           break;
         } else {
           break;

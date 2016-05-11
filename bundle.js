@@ -58,6 +58,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Pieces = __webpack_require__(4);
+	var Util = __webpack_require__(6);
 	
 	var Board = function () {
 	  this.grid = [];
@@ -69,9 +70,32 @@
 	  }
 	};
 	
+	Board.prototype.move = function (startPos, endPos, renderCB) {
+	  if (this.isEmpty(startPos)) {
+	    alert('something went wrong');
+	    return console.log('tried to move from empty board pos');
+	  }
+	
+	  if (!Util.includesPos(endPos, this.piece(startPos).moves())) {
+	    alert('something went wrong');
+	    return console.log('tried to move to invalid pos');
+	  }
+	
+	  var piece = this.piece(startPos);
+	  piece.move(endPos, renderCB);
+	};
+	
+	Board.prototype.piece = function (pos) {
+	  return this.grid[pos[0]][pos[1]];
+	};
+	
 	Board.prototype.placePiece = function (piece) {
 	  var pos = piece.pos;
 	  this.grid[pos[0]][pos[1]] = piece;
+	};
+	
+	Board.prototype.clearPiece = function (pos) {
+	  this.grid[pos[0]][pos[1]] = null;
 	};
 	
 	Board.prototype.addPiece = function (piece) {
@@ -90,12 +114,12 @@
 	  );
 	};
 	
-	Board.prototype.isEmpty = function (pos) {
+	Board.prototype.hasPiece = function (pos) {
 	  return Boolean(this.inBounds(pos) && this.grid[pos[0]][pos[1]]);
 	};
 	
-	Board.prototype.hasPiece = function (pos) {
-	  return !this.isEmpty();
+	Board.prototype.isEmpty = function (pos) {
+	  return !this.hasPiece(pos);
 	};
 	
 	Board.prototype.pieces = function (color) {
@@ -175,12 +199,13 @@
 
 	var Display = __webpack_require__(3);
 	var Board = __webpack_require__(1);
+	var Player = __webpack_require__(15);
 	
 	var Game = function($root) {
 	  this.board = new Board();
 	  this.board.populate();
 	  this.display = new Display($root, this.board);
-	  this.players = {white: '', black: ''};
+	  this.players = {white: new Player(this.board), black: ''};
 	};
 	
 	Game.prototype.play = function () {
@@ -195,6 +220,9 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Constants = __webpack_require__(13);
+	var Util = __webpack_require__(6);
+	
+	var _selected; //// move to player
 	
 	var Display = function($root, board) {
 	  this.$root = $root;
@@ -203,36 +231,129 @@
 	
 	Display.prototype.setup = function () {
 	  this.setGrid();
-	  this.setPieces();
+	  this.renderAllPieces();
 	};
 	
 	Display.prototype.setGrid = function () {
 	  this.$root.append('<ul>');
 	  $("ul").attr('id','grid');
 	  var $grid = $('#grid');
+	  $("<div>").addClass('pieces').appendTo($grid);
 	
 	  for (var row = 0; row < 8; row++) {
 	    for (var col = 0; col < 8; col++) {
 	      var pos = [row, col];
 	      var posSum = row + col;
 	      var color = (posSum % 2 === 0 ? 'white' : 'black');
-	      $('<li>').addClass('square ' + color).data('pos', pos).appendTo($grid);
+	      $('<li>')
+	        .addClass('square ' + color)
+	        .attr('pos', pos)
+	        .click(function(event) { //// move to player
+	          this.removeSelected();
+	
+	          var newPos = [
+	            parseInt($(event.target).attr('pos')[0]),
+	            parseInt($(event.target).attr('pos')[2])
+	          ];
+	
+	          if (_selected && Util.includesPos(newPos, _selected.moves())) {
+	            this.board.move(_selected.pos, newPos, this.renderCB);
+	          }
+	        }.bind(this))
+	        .appendTo($grid);
 	    }
 	  }
 	};
 	
-	Display.prototype.setPieces = function () {
-	  console.log(this.board.pieces());
-	  this.renderPiece(this.board.pieces()[0]);
+	Display.prototype.renderAllPieces = function () {
+	  $('#grid').find('.piece').remove();
+	  this.board.pieces().forEach(function(piece) {
+	    this.renderPiece(piece);
+	  }.bind(this));
+	
 	};
 	
 	Display.prototype.renderPiece = function (piece) {
-	  var top = -480 + 60 * piece.pos[0];
-	  var left = 60 * piece.pos[1];
+	  var top = 60 * piece.pos[0];
+	  var left = 60 * piece.pos[1] + 40;
 	  var content = Constants[piece.type()];
 	
-	  var $grid = $('#grid');
-	  $('<div>').addClass(piece.color).text(content).css({left: left, top: top}).appendTo($grid);
+	  var $pieces = $('.pieces');
+	  var newPiece = $('<div>')
+	    .addClass(piece.color + '-piece piece')
+	    .text(content)
+	    .css({top: top + 'px', left: left + 'px'})
+	    .attr('pos', piece.pos)
+	    .click(function(event) { //// move to player
+	      this.removeSelected();
+	
+	      var piecePos = [
+	        parseInt($(event.target).attr('pos')[0]),
+	        parseInt($(event.target).attr('pos')[2])
+	      ];
+	
+	      if (!Util.posEquals(piecePos, piece.pos))
+	        alert('something bad happened, game is broken');
+	
+	      if (piece.color === 'white') {
+	        newPiece.addClass('selected');
+	        _selected = piece;
+	        _selected.moves().forEach(function(pos) {
+	          $('li[pos="' + pos[0] + ',' + pos[1] + '"]').addClass('valid-move');
+	        });
+	      } else if (piece.color === 'black'
+	          && Util.includesPos(piece.pos, _selected.moves())) {
+	        this.board.move(_selected.pos, piece.pos, this.renderCB);
+	      }
+	    }.bind(this))
+	    .appendTo($pieces);
+	};
+	
+	Display.prototype.renderCB = function (startPos, endPos, moveCompleted) {
+	  removePiece(endPos);
+	  if (moveCompleted) {
+	    renderPieceMove(startPos, endPos, renderTimer);
+	  } else {
+	    renderPieceMove(startPos, endPos);
+	  }
+	};
+	
+	function renderPieceMove(startPos, endPos, completionCB) {
+	  var $piece = $('div[pos="' + startPos[0] + ',' + startPos[1] + '"]');
+	
+	  var top = 60 * endPos[0];
+	  var left = 60 * endPos[1] + 40;
+	
+	  $piece.css({top: top + 'px', left: left + 'px'});
+	  $piece.attr('pos', endPos);
+	
+	  if (completionCB) {
+	    setTimeout(function(){
+	      completionCB(endPos);
+	    },250);
+	  }
+	}
+	
+	function removePiece(pos) {
+	  var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
+	  $piece.remove();
+	}
+	
+	function renderTimer (pos) {
+	  var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
+	  $('<div>').addClass('timer').appendTo($piece);
+	
+	  setTimeout(function(){
+	    $piece.children().css({height: '0px', marginTop: '60px'});
+	    setTimeout(function() {
+	      $piece.children().remove();
+	    },3000);
+	  },250);
+	}
+	
+	Display.prototype.removeSelected = function () {
+	  $('.selected').removeClass('selected');
+	  $('.valid-move').removeClass('valid-move');
 	};
 	
 	module.exports = Display;
@@ -265,20 +386,52 @@
 
 	var Util = __webpack_require__(6);
 	var Piece = __webpack_require__(7);
+	var Step = __webpack_require__(16);
 	
 	function Pawn(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
+	  this.onCooldown = false;
 	
 	  var self = this;
 	  self.board.addPiece(self);
+	
+	  this.moves = Step.moves.bind(this);
 	}
 	
 	Util.inherits(Pawn, Piece);
 	
 	Pawn.prototype.getMoveDirs = function () {
+	  var b = this.board;
+	  var dirs = [];
+	  var isWhite = this.color === "white";
+	  var startingRank = isWhite ? 6 : 1;
+	  var direction = isWhite ? -1 : 1;
 	
+	  var nextPos = [this.pos[0] + direction, this.pos[1]];
+	  if (b.isEmpty(nextPos)) {
+	    dirs.push([direction, 0]);
+	    if(this.pos[0] === startingRank &&
+	      b.isEmpty([this.pos[0] + (2 * direction), this.pos[1]])) {
+	        dirs.push([direction * 2, 0]);
+	    }
+	  }
+	
+	  var left = [this.pos[0] + direction, this.pos[1] - 1];
+	  var right = [this.pos[0] + direction, this.pos[1] + 1];
+	
+	  if (b.inBounds(left)
+	      && b.hasPiece(left)
+	      && b.piece(left).color !== this.color)
+	    dirs.push([direction, -1]);
+	
+	  if (b.inBounds(right)
+	      && b.hasPiece(right)
+	      && b.piece(right).color !== this.color)
+	    dirs.push([direction, 1]);
+	
+	  return dirs;
 	};
 	
 	
@@ -299,21 +452,37 @@
 	};
 	
 	
+	Util.posEquals = function (pos1, pos2) {
+	  if (!pos1 || !pos2) {
+	    return false;
+	  }
+	  return pos1[0] === pos2[0] && pos1[1] === pos2[1];
+	};
+	
+	Util.includesPos = function(pos, array) {
+	  for (var i = 0; i < array.length; i++) {
+	    if (this.posEquals(pos, array[i]))
+	      return true;
+	  }
+	
+	  return false;
+	};
+	
+	
 	module.exports = Util;
 
 
 /***/ },
 /* 7 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
+	var Util = __webpack_require__(6);
+	
 	var Piece = function(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
-	};
-	
-	Piece.prototype.addToBoard = function () {
-	
+	  this.isMoveable = false;
 	};
 	
 	Piece.prototype.setPos = function (pos) {
@@ -332,13 +501,43 @@
 	  return this.constructor.name;
 	};
 	
-	Piece.prototype.validMove = function (pos) {
+	Piece.prototype.move = function (targetPos, renderCB) {
+	  var b = this.board;
+	  var dx = targetPos[0] - this.pos[0];
+	  var dy = targetPos[1] - this.pos[1];
+	  var xDir = dx !== 0 ? dx / Math.abs(dx) : 0;
+	  var yDir = dy !== 0 ? dy / Math.abs(dy) : 0;
+	  var newPos = [this.pos[0] + xDir, this.pos[1] + yDir];
 	
+	  if (Util.includesPos(newPos, this.moves())) {
+	    var stopMoving = false;
+	    if (Util.posEquals(newPos, targetPos) || (b.hasPiece(newPos) && b.piece(newPos).color !== this.color)) {
+	      stopMoving = true;
+	    }
+	
+	    renderCB(this.pos, newPos, stopMoving);
+	
+	    this.board.clearPiece(this.pos);
+	    this.board.clearPiece(newPos);
+	
+	    this.setPos(newPos);
+	    this.board.placePiece(this);
+	
+	    this.moved = true;
+	
+	    if (stopMoving) {
+	      this.isMoveable = true;
+	      return;
+	    } else {
+	      setTimeout(function(){
+	        this.move(targetPos, renderCB);
+	      }.bind(this), 250);
+	    }
+	  }
 	};
 	
-	Piece.prototype.moves = function () {
-	
-	};
+	Piece.STRAIGHTS = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+	Piece.DIAGONALS = [[-1, -1], [-1, 1], [1, 1], [1, -1]];
 	
 	module.exports = Piece;
 
@@ -349,20 +548,24 @@
 
 	var Util = __webpack_require__(6);
 	var Piece = __webpack_require__(7);
+	var Slide = __webpack_require__(14);
 	
 	function Bishop(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
+	  this.onCooldown = false;
 	
 	  var self = this;
 	  self.board.addPiece(self);
+	
+	  this.moves = Slide.moves.bind(this);
 	}
 	
 	Util.inherits(Bishop, Piece);
 	
 	Bishop.prototype.getMoveDirs = function () {
-	
+	  return Piece.DIAGONALS;
 	};
 	
 	module.exports = Bishop;
@@ -374,20 +577,37 @@
 
 	var Util = __webpack_require__(6);
 	var Piece = __webpack_require__(7);
+	var Step = __webpack_require__(16);
 	
 	function Knight(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
+	  this.onCooldown = false;
 	
 	  var self = this;
 	  self.board.addPiece(self);
+	
+	  this.moves = Step.moves.bind(this);
 	}
 	
 	Util.inherits(Knight, Piece);
 	
 	Knight.prototype.getMoveDirs= function () {
+	  return [[2,1], [-2,1], [-2,-1], [2,-1], [1,2], [1,-2], [-1,2], [-1,-2]];
+	};
 	
+	Knight.prototype.move = function (targetPos, renderCB) {
+	  if (Util.posEquals(targetPos, this.pos))
+	    return;
+	
+	  var b = this.board;
+	
+	  renderCB(this.pos, targetPos, true);
+	
+	  this.board.clearPiece(this.pos);
+	  this.setPos(targetPos);
+	  this.board.placePiece(this);
 	};
 	
 	module.exports = Knight;
@@ -399,20 +619,25 @@
 
 	var Util = __webpack_require__(6);
 	var Piece = __webpack_require__(7);
+	var Slide = __webpack_require__(14);
 	
 	function Rook(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
+	  this.moved = false;
+	  this.onCooldown = false;
 	
 	  var self = this;
 	  self.board.addPiece(self);
+	
+	  this.moves = Slide.moves.bind(this);
 	}
 	
 	Util.inherits(Rook, Piece);
 	
 	Rook.prototype.getMoveDirs = function () {
-	
+	  return Piece.STRAIGHTS;
 	};
 	
 	module.exports = Rook;
@@ -424,20 +649,24 @@
 
 	var Util = __webpack_require__(6);
 	var Piece = __webpack_require__(7);
+	var Slide = __webpack_require__(14);
 	
 	function Queen(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
+	  this.onCooldown = false;
 	
 	  var self = this;
 	  self.board.addPiece(self);
+	
+	  this.moves = Slide.moves.bind(this);
 	}
 	
 	Util.inherits(Queen, Piece);
 	
 	Queen.prototype.getMoveDirs = function () {
-	
+	  return Piece.STRAIGHTS.concat(Piece.DIAGONALS);
 	};
 	
 	module.exports = Queen;
@@ -449,20 +678,62 @@
 
 	var Util = __webpack_require__(6);
 	var Piece = __webpack_require__(7);
+	var Step = __webpack_require__(16);
 	
 	function King(attrs){
 	  this.color = attrs.color;
 	  this.board = attrs.board;
 	  this.pos = attrs.pos;
+	  this.moved = false;
+	  this.onCooldown = false;
 	
 	  var self = this;
 	  self.board.addPiece(self);
+	
+	  this.moves = Step.moves.bind(this);
 	}
 	
 	Util.inherits(King, Piece);
 	
 	King.prototype.getMoveDirs = function () {
+	  var dirs = Piece.STRAIGHTS.concat(Piece.DIAGONALS);
 	
+	  var isClearLeft = (this.board.isEmpty([this.pos[0], this.pos[1] - 1])
+	    && this.board.isEmpty([this.pos[0], this.pos[1] - 2])
+	    && this.board.isEmpty([this.pos[0], this.pos[1] - 3]));
+	  var isClearRight = (this.board.isEmpty([this.pos[0], this.pos[1] + 1])
+	    && this.board.isEmpty([this.pos[0], this.pos[1] + 2]));
+	  var canCastleLeft = (isClearLeft
+	    && !this.moved
+	    && this.board.hasPiece([this.pos[0], 0])
+	    && this.board.piece([this.pos[0], 0]).type() === 'Rook'
+	    && !this.board.piece([this.pos[0], 0]).moved);
+	  var canCastleRight = (isClearRight
+	    && !this.moved
+	    && this.board.hasPiece([this.pos[0], 7])
+	    && this.board.piece([this.pos[0], 7]).type() === 'Rook'
+	    && !this.board.piece([this.pos[0], 7]).moved);
+	
+	  if (canCastleLeft) {
+	    dirs.push([0, -2]);
+	  }
+	  if (canCastleRight) {
+	    dirs.push([0, 2]);
+	  }
+	
+	  return dirs;
+	};
+	
+	King.prototype.move = function (targetPos, renderCB) {
+	  var dx = Math.abs(targetPos[0] - this.pos[0]);
+	  var dy = Math.abs(targetPos[1] - this.pos[1]);
+	  var leftDir = targetPos[1] === 2 ? true : false;
+	  if (dx + dy > 1) {
+	    setTimeout(function(dir) {
+	
+	    });
+	  }
+	  Piece.prototype.move.call(this, targetPos, renderCB);
 	};
 	
 	module.exports = King;
@@ -479,6 +750,80 @@
 	  Pawn: "♟",
 	  Queen: "♛",
 	  Rook: "♜"
+	};
+
+
+/***/ },
+/* 14 */
+/***/ function(module, exports) {
+
+	module.exports = {
+	  moves: function () {
+	    var moves = [];
+	    var board = this.board;
+	    var dirs = this.getMoveDirs();
+	    for (var i = 0; i < dirs.length; i++) {
+	      for (var d = 1; d < 8; d++) {
+	        var pos = [this.pos[0] + (dirs[i][0] * d), this.pos[1] + (dirs[i][1] * d)];
+	        if (!this.board.inBounds(pos)) {
+	          break;
+	        } else if (this.board.inBounds(pos) && !this.board.hasPiece(pos)) {
+	          moves.push(pos);
+	        } else if (this.board.hasPiece(pos) && this.board.piece(pos).color !== this.color) {
+	          moves.push(pos);
+	          break;
+	        } else {
+	          break;
+	        }
+	      }
+	    }
+	    return moves;
+	  }
+	};
+
+
+/***/ },
+/* 15 */
+/***/ function(module, exports) {
+
+	function Player(board) {
+	  this.selected = undefined;
+	  this.clickHandlers();
+	  this.board = board;
+	}
+	
+	Player.prototype.clickHandlers = function () {
+	  $('#grid').click(function(event) {
+	    // this.selected = undefined;
+	    debugger;
+	    console.log(event.target.attr('pos'));
+	  });
+	};
+	
+	module.exports = Player;
+
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+	module.exports = {
+	  moves: function () {
+	    var moves = [];
+	    var board = this.board;
+	    var dirs = this.getMoveDirs();
+	    for (var i = 0; i < dirs.length; i++) {
+	      var move = [this.pos[0] + dirs[i][0], this.pos[1] + dirs[i][1]];
+	      if (!board.inBounds(move)) {
+	        continue;
+	      } else if (board.hasPiece(move) && board.piece(move).color !== this.color) {
+	        moves.push(move);
+	      } else if (!board.hasPiece(move)) {
+	        moves.push(move);
+	      }
+	    }
+	    return moves;
+	  }
 	};
 
 

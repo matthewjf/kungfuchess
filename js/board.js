@@ -1,4 +1,5 @@
 var Pieces = require('./pieces/pieces.js');
+var Util = require('./util');
 
 var Board = function () {
   this.grid = [];
@@ -10,9 +11,32 @@ var Board = function () {
   }
 };
 
+Board.prototype.move = function (startPos, endPos, renderCB) {
+  if (this.isEmpty(startPos)) {
+    alert('something went wrong');
+    return console.log('tried to move from empty board pos');
+  }
+
+  if (!Util.includesPos(endPos, this.piece(startPos).moves())) {
+    alert('something went wrong');
+    return console.log('tried to move to invalid pos');
+  }
+
+  var piece = this.piece(startPos);
+  piece.move(endPos, renderCB);
+};
+
+Board.prototype.piece = function (pos) {
+  return this.grid[pos[0]][pos[1]];
+};
+
 Board.prototype.placePiece = function (piece) {
   var pos = piece.pos;
   this.grid[pos[0]][pos[1]] = piece;
+};
+
+Board.prototype.clearPiece = function (pos) {
+  this.grid[pos[0]][pos[1]] = null;
 };
 
 Board.prototype.addPiece = function (piece) {
@@ -31,12 +55,12 @@ Board.prototype.inBounds = function (pos) {
   );
 };
 
-Board.prototype.isEmpty = function (pos) {
+Board.prototype.hasPiece = function (pos) {
   return Boolean(this.inBounds(pos) && this.grid[pos[0]][pos[1]]);
 };
 
-Board.prototype.hasPiece = function (pos) {
-  return !this.isEmpty();
+Board.prototype.isEmpty = function (pos) {
+  return !this.hasPiece(pos);
 };
 
 Board.prototype.pieces = function (color) {
