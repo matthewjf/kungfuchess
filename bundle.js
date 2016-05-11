@@ -97,7 +97,7 @@
 	
 	Display.prototype.setGrid = function () {
 	  this.$root.append('<ul>');
-	  $("ul").attr('id','grid');
+	  $("ul").attr('id','grid').addClass('section');
 	  var $grid = $('#grid');
 	  $("<div>").addClass('pieces').appendTo($grid);
 	
