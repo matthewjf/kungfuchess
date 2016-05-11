@@ -1,10 +1,16 @@
 body {
   background-color: #424242;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 h1 {
+  font-family: 'Indie Flower';
   color: white;
   text-align: center;
+  font-size: 48px;
 }
 
 #game {
@@ -14,6 +20,7 @@ h1 {
 }
 
 #grid {
+  padding: 0;
   flex-shrink: 0;
   list-style: none;
   display: flex;
@@ -22,6 +29,14 @@ h1 {
   height: 480px;
   width: 480px;
   position: relative;
+}
+
+#game-controls {
+  width: 480px;
+}
+
+#info {
+  max-width: 480px;
 }
 
 .square {

@@ -54,7 +54,7 @@ Display.prototype.renderAllPieces = function () {
 
 Display.prototype.renderPiece = function (piece) {
   var top = 60 * piece.pos[0];
-  var left = 60 * piece.pos[1] + 40;
+  var left = 60 * piece.pos[1];
   var content = Constants[piece.type()];
 
   var $pieces = $('.pieces');
@@ -102,7 +102,7 @@ function renderPieceMove(startPos, endPos, completionCB) {
   var $piece = $('div[pos="' + startPos[0] + ',' + startPos[1] + '"]');
 
   var top = 60 * endPos[0];
-  var left = 60 * endPos[1] + 40;
+  var left = 60 * endPos[1];
 
   $piece.css({top: top + 'px', left: left + 'px'});
   $piece.attr('pos', endPos);
