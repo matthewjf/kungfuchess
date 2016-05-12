@@ -52,12 +52,35 @@
 	
 	  var $controls = $('#game-controls');
 	  $('<input id="start" type="button" value="start" />').click(function(event){
-	    // do some timeout shit here
-	    game.play();
+	    var $overlay = $('<div>').addClass('overlay').prependTo($('html'));
+	    var $modal = $('<div>').addClass('modal').appendTo($overlay);
+	    var $countdown = $('<div>')
+	      .addClass('countdown')
+	      .text('3')
+	      .appendTo($modal);
+	
+	    setTimeout(function(){
+	      $countdown.text('2');
+	      setTimeout(function() {
+	        $countdown.text('1');
+	        setTimeout(function() {
+	          $overlay.empty();
+	          $overlay.remove();
+	        }, 1000);
+	      }, 1000);
+	    }, 1000);
+	
+	    setTimeout(function(){
+	      game.play();
+	      $('#restart').prop('disabled', false);
+	      $('#start').prop('disabled', true);
+	    }, 3000);
 	  }).appendTo($controls);
-	  $('<input id="restart" type="button" value="restart" />').click(function(){
-	    $('#grid').remove();
+	  $('<input id="restart" type="button" value="restart" disabled/>').click(function(){
+	    game.destroy();
 	    game = new Game($root);
+	    $('#start').prop('disabled', false);
+	    $('#restart').prop('disabled', true);
 	  }).appendTo($controls);
 	  $('<input id="info" type="button" value="info" />').click(function(){
 	
@@ -73,15 +96,17 @@
 	var Board = __webpack_require__(5);
 	var Player = __webpack_require__(16);
 	var randomAI = __webpack_require__(17);
+	var greedyAI = __webpack_require__(18);
 	
 	var Game = function($root) {
 	  this.board = new Board();
 	  this.board.populate();
 	  this.display = new Display($root, this.board);
+	  this.running = false;
 	
 	  this.players = {
 	    white: new Player(this.board),
-	    black: new randomAI(this.board, this.display)
+	    black: new greedyAI(this.board, this.display)
 	  };
 	
 	  this.renderBoard();
@@ -90,10 +115,18 @@
 	Game.prototype.play = function () {
 	  this.display.setup();
 	  this.players.black.run();
+	  this.running = true;
 	};
 	
 	Game.prototype.renderBoard = function () {
 	  this.display.setGrid();
+	};
+	
+	Game.prototype.destroy = function () {
+	  this.running = false;
+	  this.players.black.kill();
+	  this.board.destroy();
+	  this.display.destroy();
 	};
 	
 	module.exports = Game;
@@ -240,6 +273,10 @@
 	Display.prototype.removeSelected = function () {
 	  $('.selected').removeClass('selected');
 	  $('.valid-move').removeClass('valid-move');
+	};
+	
+	Display.prototype.destroy = function () {
+	  this.$root.empty();
 	};
 	
 	module.exports = Display;
@@ -424,6 +461,12 @@
 	    this.grid[piece.pos[0]][piece.pos[1]] = null;
 	    piece.setPos(null);
 	  }
+	};
+	
+	Board.prototype.destroy = function () {
+	  this.grid = [];
+	  this.whitePieces = [];
+	  this.blackPieces = [];
 	};
 	
 	Board.prototype.populate = function () {
@@ -964,6 +1007,76 @@
 	};
 	
 	module.exports = RandomAI;
+
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	function GreedyAI(board, display) {
+	  this.board = board;
+	  this.display = display;
+	}
+	
+	GreedyAI.prototype.run = function () {
+	  this.intervalID = setInterval(function() {
+	    if (this.board.isGameOver())
+	      clearInterval(this.intervalID);
+	    var piece = this.randPiece();
+	    var move = this.randMove(piece);
+	    this.board.move(piece.pos, move, this.display.renderCB);
+	  }.bind(this), 500);
+	};
+	
+	GreedyAI.prototype.kill = function () {
+	  if (this.intervalID)
+	    clearInterval(this.intervalID);
+	};
+	
+	GreedyAI.prototype.randPiece = function () {
+	  var pieces = this.moveablePieces();
+	  var randPiece = pieces[Math.floor(Math.random()*pieces.length)];
+	  return randPiece;
+	};
+	
+	GreedyAI.prototype.randMove = function (piece) {
+	  var moves = piece.moves();
+	  var randMove = moves[Math.floor(Math.random()*moves.length)];
+	  return randMove;
+	};
+	
+	GreedyAI.prototype.takeableMove = function (piece) {
+	  var move;
+	  for (var i = 0; i < piece.moves().length; i++) {
+	    move = piece.moves()[i];
+	    if (this.board.hasPiece(move) && this.board.piece(move).color === 'white') {
+	      return piece;
+	    }
+	  }
+	};
+	
+	GreedyAI.prototype.moveablePieces = function () {
+	  var pieces = this.board.blackPieces.filter(function(piece) {
+	    return piece.isMoveable;
+	  });
+	
+	  return pieces;
+	};
+	
+	GreedyAI.prototype.findPiece = function () {
+	  var move;
+	  var pieces = this.moveablePieces();
+	  for (var i = 0; i < pieces.length; i++) {
+	    move = this.takeableMove(pieces[i]);
+	    if (move) {
+	      return move;
+	    }
+	  }
+	
+	  return this.randMove();
+	};
+	
+	module.exports = GreedyAI;
 
 
 /***/ }

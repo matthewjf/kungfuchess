@@ -137,4 +137,8 @@ Display.prototype.removeSelected = function () {
   $('.valid-move').removeClass('valid-move');
 };
 
+Display.prototype.destroy = function () {
+  this.$root.empty();
+};
+
 module.exports = Display;

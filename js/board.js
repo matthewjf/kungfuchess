@@ -126,6 +126,12 @@ Board.prototype.removePiece = function (pos) {
   }
 };
 
+Board.prototype.destroy = function () {
+  this.grid = [];
+  this.whitePieces = [];
+  this.blackPieces = [];
+};
+
 Board.prototype.populate = function () {
   new Pieces.Pawn({color: "black", board: this, pos: [1,0]});
   new Pieces.Pawn({color: "black", board: this, pos: [1,1]});
