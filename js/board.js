@@ -135,7 +135,6 @@ Board.prototype.promotePawn = function (piece, renderCB) {
 
   var q = new Pieces.Queen({color: color, board: this, pos: pos});
   q.isMoveable = false;
-  this.addPiece(q);
 
   var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
   $piece.text(Constants.Queen);

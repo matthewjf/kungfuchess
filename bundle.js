@@ -215,19 +215,18 @@
 	        parseInt($(event.target).attr('pos')[2])
 	      ];
 	
-	      if (!Util.posEquals(piecePos, piece.pos))
-	        alert('something bad happened, game is broken');
+	      var p = this.board.piece(piecePos);
 	
-	      if (piece.color === 'white' ) {
+	      if (p.color === 'white' ) {
 	        newPiece.addClass('selected');
-	        _selected = piece;
+	        _selected = p;
 	        _selected.moves().forEach(function(pos) {
 	          $('li[pos="' + pos[0] + ',' + pos[1] + '"]').addClass('valid-move');
 	        });
-	      } else if (piece.color === 'black'
-	          && Util.includesPos(piece.pos, _selected.moves())
+	      } else if (p.color === 'black'
+	          && Util.includesPos(p.pos, _selected.moves())
 	          && _selected.isMoveable) {
-	        this.board.move(_selected.pos, piece.pos, this.renderCB);
+	        this.board.move(_selected.pos, p.pos, this.renderCB);
 	      }
 	    }.bind(this))
 	    .appendTo($pieces);
@@ -478,7 +477,6 @@
 	
 	  var q = new Pieces.Queen({color: color, board: this, pos: pos});
 	  q.isMoveable = false;
-	  this.addPiece(q);
 	
 	  var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
 	  $piece.text(Constants.Queen);
