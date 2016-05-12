@@ -72,15 +72,15 @@
 	
 	    setTimeout(function(){
 	      game.play();
-	      $('#restart').prop('disabled', false);
+	      $('#reset').prop('disabled', false);
 	      $('#start').prop('disabled', true);
 	    }, 3000);
 	  }).appendTo($controls);
-	  $('<input id="restart" type="button" value="restart" disabled/>').click(function(){
+	  $('<input id="reset" type="button" value="reset" disabled/>').click(function(){
 	    game.destroy();
 	    game = new Game($root);
 	    $('#start').prop('disabled', false);
-	    $('#restart').prop('disabled', true);
+	    $('#reset').prop('disabled', true);
 	  }).appendTo($controls);
 	  $('<input id="info" type="button" value="info" />').click(function(){
 	    window.open('https://en.wikipedia.org/wiki/Kung-Fu_Chess');

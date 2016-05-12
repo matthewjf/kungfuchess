@@ -106,19 +106,19 @@ a {
   background-color: #9e9e9e;
 }
 
-#restart {
+#reset {
   background-color: hsl(1, 77%, 55%);
 }
 
-#restart:hover {
+#reset:hover {
   background-color: hsl(1, 77%, 63%)
 }
 
-#restart:active {
+#reset:active {
   background-color: hsl(1, 77%, 47%)
 }
 
-#restart:disabled {
+#reset:disabled {
   color: #e0e0e0;
   background-color: #9e9e9e;
 }
