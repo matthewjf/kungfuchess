@@ -33,15 +33,15 @@ Piece.prototype.move = function (targetPos, renderCB) {
   var newPos = [this.pos[0] + xDir, this.pos[1] + yDir];
 
   if (Util.includesPos(newPos, this.moves())) {
+    this.isMoveable = false;
     var stopMoving = false;
     if (Util.posEquals(newPos, targetPos) || (b.hasPiece(newPos) && b.piece(newPos).color !== this.color)) {
       stopMoving = true;
     }
-
     renderCB(this.pos, newPos, stopMoving);
 
-    this.board.clearPiece(this.pos);
     this.board.removePiece(newPos);
+    this.board.clearPos(this.pos);
 
     this.setPos(newPos);
     this.board.placePiece(this);
@@ -53,10 +53,11 @@ Piece.prototype.move = function (targetPos, renderCB) {
     }
 
     if (stopMoving) {
-      this.isMoveable = false;
-      setTimeout(function() {
-        this.isMoveable = true;
-      }.bind(this), Constants.Timer + 500);
+      if (this.type() === 'Pawn' && (this.pos[0] === 7 || this.pos[0] === 0)) {
+        this.board.promotePawn(this, renderCB);
+      } else {
+        this.setTimer();
+      }
       return;
     } else {
       setTimeout(function(){
@@ -64,6 +65,12 @@ Piece.prototype.move = function (targetPos, renderCB) {
       }.bind(this), 250);
     }
   }
+};
+
+Piece.prototype.setTimer = function () {
+  setTimeout(function() {
+    this.isMoveable = true;
+  }.bind(this), Constants.Timer + 500);
 };
 
 Piece.STRAIGHTS = [[-1, 0], [1, 0], [0, -1], [0, 1]];

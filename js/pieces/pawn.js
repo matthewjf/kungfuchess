@@ -48,5 +48,4 @@ Pawn.prototype.getMoveDirs = function () {
   return dirs;
 };
 
-
 module.exports = Pawn;

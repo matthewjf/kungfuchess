@@ -29,7 +29,7 @@ Display.prototype.setGrid = function () {
         .addClass('square ' + color)
         .attr('pos', pos)
         .click(function(event) { //// move to player
-          this.removeSelected();
+          removeSelected();
 
           var newPos = [
             parseInt($(event.target).attr('pos')[0]),
@@ -53,7 +53,7 @@ Display.prototype.renderAllPieces = function () {
 
 };
 
-Display.prototype.renderPiece = function (piece) {
+Display.prototype.renderPiece = function(piece) {
   var top = 60 * piece.pos[0];
   var left = 60 * piece.pos[1];
   var content = Constants[piece.type()];
@@ -65,7 +65,7 @@ Display.prototype.renderPiece = function (piece) {
     .css({top: top + 'px', left: left + 'px'})
     .attr('pos', piece.pos)
     .click(function(event) { //// move to player
-      this.removeSelected();
+      removeSelected();
 
       var piecePos = [
         parseInt($(event.target).attr('pos')[0]),
@@ -117,6 +117,7 @@ function renderPieceMove(startPos, endPos, completionCB) {
 
 function removePiece(pos) {
   var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
+  $piece.empty();
   $piece.remove();
 }
 
@@ -132,10 +133,10 @@ function renderTimer (pos) {
   },250);
 }
 
-Display.prototype.removeSelected = function () {
+function removeSelected() {
   $('.selected').removeClass('selected');
   $('.valid-move').removeClass('valid-move');
-};
+}
 
 Display.prototype.destroy = function () {
   this.$root.empty();

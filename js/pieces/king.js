@@ -64,7 +64,7 @@ King.prototype.move = function (targetPos, renderCB) {
       var newPos = left ? [rook.pos[0], 3] : [rook.pos[0], 5];
       var oldPos = rook.pos;
       renderCB(rook.pos, newPos, true);
-      b.clearPiece(rook.pos);
+      b.clearPos(rook.pos);
       if (left)
         rook.setPos([oldPos[0], 3]);
       else

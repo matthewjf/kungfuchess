@@ -29,7 +29,7 @@ Knight.prototype.move = function (targetPos, renderCB) {
 
   renderCB(this.pos, targetPos, true);
 
-  this.board.clearPiece(this.pos);
+  this.board.clearPos(this.pos);
   this.board.removePiece(targetPos);
   this.setPos(targetPos);
   this.board.placePiece(this);

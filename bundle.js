@@ -167,7 +167,7 @@
 	        .addClass('square ' + color)
 	        .attr('pos', pos)
 	        .click(function(event) { //// move to player
-	          this.removeSelected();
+	          removeSelected();
 	
 	          var newPos = [
 	            parseInt($(event.target).attr('pos')[0]),
@@ -191,7 +191,7 @@
 	
 	};
 	
-	Display.prototype.renderPiece = function (piece) {
+	Display.prototype.renderPiece = function(piece) {
 	  var top = 60 * piece.pos[0];
 	  var left = 60 * piece.pos[1];
 	  var content = Constants[piece.type()];
@@ -203,7 +203,7 @@
 	    .css({top: top + 'px', left: left + 'px'})
 	    .attr('pos', piece.pos)
 	    .click(function(event) { //// move to player
-	      this.removeSelected();
+	      removeSelected();
 	
 	      var piecePos = [
 	        parseInt($(event.target).attr('pos')[0]),
@@ -255,6 +255,7 @@
 	
 	function removePiece(pos) {
 	  var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
+	  $piece.empty();
 	  $piece.remove();
 	}
 	
@@ -270,10 +271,10 @@
 	  },250);
 	}
 	
-	Display.prototype.removeSelected = function () {
+	function removeSelected() {
 	  $('.selected').removeClass('selected');
 	  $('.valid-move').removeClass('valid-move');
-	};
+	}
 	
 	Display.prototype.destroy = function () {
 	  this.$root.empty();
@@ -337,6 +338,7 @@
 
 	var Pieces = __webpack_require__(6);
 	var Util = __webpack_require__(4);
+	var Constants = __webpack_require__(3);
 	
 	var Board = function () {
 	  this.grid = [];
@@ -438,7 +440,7 @@
 	  return result;
 	};
 	
-	Board.prototype.clearPiece = function (pos) {
+	Board.prototype.clearPos = function (pos) {
 	  if (this.hasPiece(pos)) {
 	    var piece = this.piece(pos);
 	    piece.setPos(null);
@@ -463,6 +465,22 @@
 	  }
 	};
 	
+	Board.prototype.promotePawn = function (piece, renderCB) {
+	  var color = piece.color;
+	  var pos = piece.pos;
+	
+	  this.removePiece(piece.pos);
+	
+	  var q = new Pieces.Queen({color: color, board: this, pos: pos});
+	  q.isMoveable = false;
+	  this.addPiece(q);
+	
+	  var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
+	  $piece.text(Constants.Queen);
+	
+	  q.setTimer();
+	};
+	
 	Board.prototype.destroy = function () {
 	  this.grid = [];
 	  this.whitePieces = [];
@@ -470,38 +488,43 @@
 	};
 	
 	Board.prototype.populate = function () {
-	  new Pieces.Pawn({color: "black", board: this, pos: [1,0]});
-	  new Pieces.Pawn({color: "black", board: this, pos: [1,1]});
-	  new Pieces.Pawn({color: "black", board: this, pos: [1,2]});
-	  new Pieces.Pawn({color: "black", board: this, pos: [1,3]});
-	  new Pieces.Pawn({color: "black", board: this, pos: [1,4]});
-	  new Pieces.Pawn({color: "black", board: this, pos: [1,5]});
-	  new Pieces.Pawn({color: "black", board: this, pos: [1,6]});
-	  new Pieces.Pawn({color: "black", board: this, pos: [1,7]});
-	  new Pieces.Pawn({color: "white", board: this, pos: [6,0]});
-	  new Pieces.Pawn({color: "white", board: this, pos: [6,1]});
-	  new Pieces.Pawn({color: "white", board: this, pos: [6,2]});
-	  new Pieces.Pawn({color: "white", board: this, pos: [6,3]});
-	  new Pieces.Pawn({color: "white", board: this, pos: [6,4]});
-	  new Pieces.Pawn({color: "white", board: this, pos: [6,5]});
-	  new Pieces.Pawn({color: "white", board: this, pos: [6,6]});
-	  new Pieces.Pawn({color: "white", board: this, pos: [6,7]});
-	  new Pieces.Bishop({color: "white", board: this, pos: [7,2]});
-	  new Pieces.Bishop({color: "white", board: this, pos: [7,5]});
-	  new Pieces.Bishop({color: "black", board: this, pos: [0,2]});
-	  new Pieces.Bishop({color: "black", board: this, pos: [0,5]});
-	  new Pieces.Knight({color: "white", board: this, pos: [7,1]});
-	  new Pieces.Knight({color: "white", board: this, pos: [7,6]});
-	  new Pieces.Knight({color: "black", board: this, pos: [0,1]});
-	  new Pieces.Knight({color: "black", board: this, pos: [0,6]});
-	  new Pieces.Rook({color: "white", board: this, pos: [7,0]});
-	  new Pieces.Rook({color: "white", board: this, pos: [7,7]});
-	  new Pieces.Rook({color: "black", board: this, pos: [0,7]});
-	  new Pieces.Rook({color: "black", board: this, pos: [0,0]});
-	  new Pieces.Queen({color: "white", board: this, pos: [7,3]});
-	  new Pieces.Queen({color: "black", board: this, pos: [0,3]});
-	  new Pieces.King({color: "black", board: this, pos: [0,4]});
-	  new Pieces.King({color: "white", board: this, pos: [7,4]});
+	  // new Pieces.Pawn({color: "black", board: this, pos: [1,0]});
+	  // new Pieces.Pawn({color: "black", board: this, pos: [1,1]});
+	  // new Pieces.Pawn({color: "black", board: this, pos: [1,2]});
+	  // new Pieces.Pawn({color: "black", board: this, pos: [1,3]});
+	  // new Pieces.Pawn({color: "black", board: this, pos: [1,4]});
+	  // new Pieces.Pawn({color: "black", board: this, pos: [1,5]});
+	  // new Pieces.Pawn({color: "black", board: this, pos: [1,6]});
+	  // new Pieces.Pawn({color: "black", board: this, pos: [1,7]});
+	  // new Pieces.Pawn({color: "white", board: this, pos: [6,0]});
+	  // new Pieces.Pawn({color: "white", board: this, pos: [6,1]});
+	  // new Pieces.Pawn({color: "white", board: this, pos: [6,2]});
+	  // new Pieces.Pawn({color: "white", board: this, pos: [6,3]});
+	  // new Pieces.Pawn({color: "white", board: this, pos: [6,4]});
+	  // new Pieces.Pawn({color: "white", board: this, pos: [6,5]});
+	  // new Pieces.Pawn({color: "white", board: this, pos: [6,6]});
+	  // new Pieces.Pawn({color: "white", board: this, pos: [6,7]});
+	  // new Pieces.Bishop({color: "white", board: this, pos: [7,2]});
+	  // new Pieces.Bishop({color: "white", board: this, pos: [7,5]});
+	  // new Pieces.Bishop({color: "black", board: this, pos: [0,2]});
+	  // new Pieces.Bishop({color: "black", board: this, pos: [0,5]});
+	  // new Pieces.Knight({color: "white", board: this, pos: [7,1]});
+	  // new Pieces.Knight({color: "white", board: this, pos: [7,6]});
+	  // new Pieces.Knight({color: "black", board: this, pos: [0,1]});
+	  // new Pieces.Knight({color: "black", board: this, pos: [0,6]});
+	  // new Pieces.Rook({color: "white", board: this, pos: [7,0]});
+	  // new Pieces.Rook({color: "white", board: this, pos: [7,7]});
+	  // new Pieces.Rook({color: "black", board: this, pos: [0,7]});
+	  // new Pieces.Rook({color: "black", board: this, pos: [0,0]});
+	  // new Pieces.Queen({color: "white", board: this, pos: [7,3]});
+	  // new Pieces.Queen({color: "black", board: this, pos: [0,3]});
+	  // new Pieces.King({color: "black", board: this, pos: [0,4]});
+	  // new Pieces.King({color: "white", board: this, pos: [7,4]});
+	
+	  // testing
+	  new Pieces.King({color: "black", board: this, pos: [7,4]});
+	  new Pieces.King({color: "white", board: this, pos: [0,4]});
+	  new Pieces.Pawn({color: "black", board: this, pos: [6,1]});
 	};
 	
 	
@@ -583,7 +606,6 @@
 	  return dirs;
 	};
 	
-	
 	module.exports = Pawn;
 
 
@@ -626,15 +648,15 @@
 	  var newPos = [this.pos[0] + xDir, this.pos[1] + yDir];
 	
 	  if (Util.includesPos(newPos, this.moves())) {
+	    this.isMoveable = false;
 	    var stopMoving = false;
 	    if (Util.posEquals(newPos, targetPos) || (b.hasPiece(newPos) && b.piece(newPos).color !== this.color)) {
 	      stopMoving = true;
 	    }
-	
 	    renderCB(this.pos, newPos, stopMoving);
 	
-	    this.board.clearPiece(this.pos);
 	    this.board.removePiece(newPos);
+	    this.board.clearPos(this.pos);
 	
 	    this.setPos(newPos);
 	    this.board.placePiece(this);
@@ -646,10 +668,11 @@
 	    }
 	
 	    if (stopMoving) {
-	      this.isMoveable = false;
-	      setTimeout(function() {
-	        this.isMoveable = true;
-	      }.bind(this), Constants.Timer + 500);
+	      if (this.type() === 'Pawn' && (this.pos[0] === 7 || this.pos[0] === 0)) {
+	        this.board.promotePawn(this, renderCB);
+	      } else {
+	        this.setTimer();
+	      }
 	      return;
 	    } else {
 	      setTimeout(function(){
@@ -657,6 +680,12 @@
 	      }.bind(this), 250);
 	    }
 	  }
+	};
+	
+	Piece.prototype.setTimer = function () {
+	  setTimeout(function() {
+	    this.isMoveable = true;
+	  }.bind(this), Constants.Timer + 500);
 	};
 	
 	Piece.STRAIGHTS = [[-1, 0], [1, 0], [0, -1], [0, 1]];
@@ -782,7 +811,7 @@
 	
 	  renderCB(this.pos, targetPos, true);
 	
-	  this.board.clearPiece(this.pos);
+	  this.board.clearPos(this.pos);
 	  this.board.removePiece(targetPos);
 	  this.setPos(targetPos);
 	  this.board.placePiece(this);
@@ -929,7 +958,7 @@
 	      var newPos = left ? [rook.pos[0], 3] : [rook.pos[0], 5];
 	      var oldPos = rook.pos;
 	      renderCB(rook.pos, newPos, true);
-	      b.clearPiece(rook.pos);
+	      b.clearPos(rook.pos);
 	      if (left)
 	        rook.setPos([oldPos[0], 3]);
 	      else
@@ -1022,9 +1051,12 @@
 	  this.intervalID = setInterval(function() {
 	    if (this.board.isGameOver())
 	      clearInterval(this.intervalID);
-	    var piece = this.randPiece();
-	    var move = this.randMove(piece);
-	    this.board.move(piece.pos, move, this.display.renderCB);
+	    var piece = this.findPiece();
+	    if (piece) {
+	      var take = this.takeableMove(piece);
+	      var move = take ? take : this.randMove(piece);
+	      this.board.move(piece.pos, move, this.display.renderCB);
+	    }
 	  }.bind(this), 500);
 	};
 	
@@ -1045,35 +1077,49 @@
 	  return randMove;
 	};
 	
+	GreedyAI.prototype.takeableKing = function (piece) {
+	  var move;
+	  for (var i = 0; i < piece.moves().length; i++) {
+	    move = piece.moves()[i];
+	    if (this.board.hasPiece(move)
+	        && this.board.piece(move).color === 'white'
+	        && this.board.piece(move).type === 'King') {
+	      return move;
+	    }
+	  }
+	};
+	
 	GreedyAI.prototype.takeableMove = function (piece) {
+	  if (typeof piece === 'undefined')
+	    return;
+	
 	  var move;
 	  for (var i = 0; i < piece.moves().length; i++) {
 	    move = piece.moves()[i];
 	    if (this.board.hasPiece(move) && this.board.piece(move).color === 'white') {
-	      return piece;
+	      return move;
 	    }
 	  }
 	};
 	
 	GreedyAI.prototype.moveablePieces = function () {
 	  var pieces = this.board.blackPieces.filter(function(piece) {
-	    return piece.isMoveable;
+	    return (piece.isMoveable && piece.moves().length > 0);
 	  });
 	
 	  return pieces;
 	};
 	
 	GreedyAI.prototype.findPiece = function () {
-	  var move;
 	  var pieces = this.moveablePieces();
 	  for (var i = 0; i < pieces.length; i++) {
-	    move = this.takeableMove(pieces[i]);
+	    var move = this.takeableMove(pieces[i]);
 	    if (move) {
-	      return move;
+	      return pieces[i];
 	    }
 	  }
 	
-	  return this.randMove();
+	  return this.randPiece();
 	};
 	
 	module.exports = GreedyAI;
