@@ -1060,7 +1060,7 @@
 	      var move = take ? take : this.randMove(piece);
 	      this.board.move(piece.pos, move, this.display.renderCB);
 	    }
-	  }.bind(this), 1000);
+	  }.bind(this), 1250);
 	};
 	
 	GreedyAI.prototype.kill = function () {
