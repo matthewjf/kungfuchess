@@ -13,7 +13,7 @@ GreedyAI.prototype.run = function () {
       var move = take ? take : this.randMove(piece);
       this.board.move(piece.pos, move, this.display.renderCB);
     }
-  }.bind(this), 500);
+  }.bind(this), 1000);
 };
 
 GreedyAI.prototype.kill = function () {
