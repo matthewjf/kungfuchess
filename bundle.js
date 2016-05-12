@@ -488,43 +488,43 @@
 	};
 	
 	Board.prototype.populate = function () {
-	  // new Pieces.Pawn({color: "black", board: this, pos: [1,0]});
-	  // new Pieces.Pawn({color: "black", board: this, pos: [1,1]});
-	  // new Pieces.Pawn({color: "black", board: this, pos: [1,2]});
-	  // new Pieces.Pawn({color: "black", board: this, pos: [1,3]});
-	  // new Pieces.Pawn({color: "black", board: this, pos: [1,4]});
-	  // new Pieces.Pawn({color: "black", board: this, pos: [1,5]});
-	  // new Pieces.Pawn({color: "black", board: this, pos: [1,6]});
-	  // new Pieces.Pawn({color: "black", board: this, pos: [1,7]});
-	  // new Pieces.Pawn({color: "white", board: this, pos: [6,0]});
-	  // new Pieces.Pawn({color: "white", board: this, pos: [6,1]});
-	  // new Pieces.Pawn({color: "white", board: this, pos: [6,2]});
-	  // new Pieces.Pawn({color: "white", board: this, pos: [6,3]});
-	  // new Pieces.Pawn({color: "white", board: this, pos: [6,4]});
-	  // new Pieces.Pawn({color: "white", board: this, pos: [6,5]});
-	  // new Pieces.Pawn({color: "white", board: this, pos: [6,6]});
-	  // new Pieces.Pawn({color: "white", board: this, pos: [6,7]});
-	  // new Pieces.Bishop({color: "white", board: this, pos: [7,2]});
-	  // new Pieces.Bishop({color: "white", board: this, pos: [7,5]});
-	  // new Pieces.Bishop({color: "black", board: this, pos: [0,2]});
-	  // new Pieces.Bishop({color: "black", board: this, pos: [0,5]});
-	  // new Pieces.Knight({color: "white", board: this, pos: [7,1]});
-	  // new Pieces.Knight({color: "white", board: this, pos: [7,6]});
-	  // new Pieces.Knight({color: "black", board: this, pos: [0,1]});
-	  // new Pieces.Knight({color: "black", board: this, pos: [0,6]});
-	  // new Pieces.Rook({color: "white", board: this, pos: [7,0]});
-	  // new Pieces.Rook({color: "white", board: this, pos: [7,7]});
-	  // new Pieces.Rook({color: "black", board: this, pos: [0,7]});
-	  // new Pieces.Rook({color: "black", board: this, pos: [0,0]});
-	  // new Pieces.Queen({color: "white", board: this, pos: [7,3]});
-	  // new Pieces.Queen({color: "black", board: this, pos: [0,3]});
-	  // new Pieces.King({color: "black", board: this, pos: [0,4]});
-	  // new Pieces.King({color: "white", board: this, pos: [7,4]});
+	  new Pieces.Pawn({color: "black", board: this, pos: [1,0]});
+	  new Pieces.Pawn({color: "black", board: this, pos: [1,1]});
+	  new Pieces.Pawn({color: "black", board: this, pos: [1,2]});
+	  new Pieces.Pawn({color: "black", board: this, pos: [1,3]});
+	  new Pieces.Pawn({color: "black", board: this, pos: [1,4]});
+	  new Pieces.Pawn({color: "black", board: this, pos: [1,5]});
+	  new Pieces.Pawn({color: "black", board: this, pos: [1,6]});
+	  new Pieces.Pawn({color: "black", board: this, pos: [1,7]});
+	  new Pieces.Pawn({color: "white", board: this, pos: [6,0]});
+	  new Pieces.Pawn({color: "white", board: this, pos: [6,1]});
+	  new Pieces.Pawn({color: "white", board: this, pos: [6,2]});
+	  new Pieces.Pawn({color: "white", board: this, pos: [6,3]});
+	  new Pieces.Pawn({color: "white", board: this, pos: [6,4]});
+	  new Pieces.Pawn({color: "white", board: this, pos: [6,5]});
+	  new Pieces.Pawn({color: "white", board: this, pos: [6,6]});
+	  new Pieces.Pawn({color: "white", board: this, pos: [6,7]});
+	  new Pieces.Bishop({color: "white", board: this, pos: [7,2]});
+	  new Pieces.Bishop({color: "white", board: this, pos: [7,5]});
+	  new Pieces.Bishop({color: "black", board: this, pos: [0,2]});
+	  new Pieces.Bishop({color: "black", board: this, pos: [0,5]});
+	  new Pieces.Knight({color: "white", board: this, pos: [7,1]});
+	  new Pieces.Knight({color: "white", board: this, pos: [7,6]});
+	  new Pieces.Knight({color: "black", board: this, pos: [0,1]});
+	  new Pieces.Knight({color: "black", board: this, pos: [0,6]});
+	  new Pieces.Rook({color: "white", board: this, pos: [7,0]});
+	  new Pieces.Rook({color: "white", board: this, pos: [7,7]});
+	  new Pieces.Rook({color: "black", board: this, pos: [0,7]});
+	  new Pieces.Rook({color: "black", board: this, pos: [0,0]});
+	  new Pieces.Queen({color: "white", board: this, pos: [7,3]});
+	  new Pieces.Queen({color: "black", board: this, pos: [0,3]});
+	  new Pieces.King({color: "black", board: this, pos: [0,4]});
+	  new Pieces.King({color: "white", board: this, pos: [7,4]});
 	
 	  // testing
-	  new Pieces.King({color: "black", board: this, pos: [7,4]});
-	  new Pieces.King({color: "white", board: this, pos: [0,4]});
-	  new Pieces.Pawn({color: "black", board: this, pos: [6,1]});
+	  // new Pieces.King({color: "black", board: this, pos: [7,4]});
+	  // new Pieces.King({color: "white", board: this, pos: [0,4]});
+	  // new Pieces.Pawn({color: "black", board: this, pos: [6,1]});
 	};
 	
 	
