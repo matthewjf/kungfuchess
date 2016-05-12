@@ -49,7 +49,7 @@ Piece.prototype.move = function (targetPos, renderCB) {
     this.moved = true;
 
     if (this.board.isGameOver()) {
-      alert('game over');
+      console.log('move attempted, game has ended');
     }
 
     if (stopMoving) {

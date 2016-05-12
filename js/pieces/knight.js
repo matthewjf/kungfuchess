@@ -35,7 +35,7 @@ Knight.prototype.move = function (targetPos, renderCB) {
   this.board.placePiece(this);
 
   if (this.board.isGameOver()) {
-    alert('game over');
+    console.log('move attempt when game over');
   }
 
   this.isMoveable = false;

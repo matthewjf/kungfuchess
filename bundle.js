@@ -669,7 +669,7 @@
 	    this.moved = true;
 	
 	    if (this.board.isGameOver()) {
-	      alert('game over');
+	      console.log('move attempted, game has ended');
 	    }
 	
 	    if (stopMoving) {
@@ -822,7 +822,7 @@
 	  this.board.placePiece(this);
 	
 	  if (this.board.isGameOver()) {
-	    alert('game over');
+	    console.log('move attempt when game over');
 	  }
 	
 	  this.isMoveable = false;
