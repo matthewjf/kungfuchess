@@ -933,7 +933,9 @@
 	}
 	
 	RandomAI.prototype.run = function () {
-	  setInterval(function() {
+	  this.intervalID = setInterval(function() {
+	    if (this.board.isGameOver())
+	      clearInterval(this.intervalID).bind(this);
 	    var piece = this.randPiece();
 	    var move = this.randMove(piece);
 	    this.board.move(piece.pos, move, this.display.renderCB);
