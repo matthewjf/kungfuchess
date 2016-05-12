@@ -83,8 +83,13 @@
 	    $('#restart').prop('disabled', true);
 	  }).appendTo($controls);
 	  $('<input id="info" type="button" value="info" />').click(function(){
-	
+	    window.open('https://en.wikipedia.org/wiki/Kung-Fu_Chess');
 	  }).appendTo($controls);
+	
+	  // $('<a target=_"blank" href="https://en.wikipedia.org/wiki/Kung-Fu_Chess"')
+	  //   .text("About Kungfu Chess")
+	  //   .appendTo($controls);
+	
 	});
 
 
