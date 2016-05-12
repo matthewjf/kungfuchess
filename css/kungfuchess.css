@@ -28,6 +28,9 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  height: 480px;
 }
 
 #grid {
@@ -38,6 +41,7 @@ h1 {
   flex-wrap: wrap;
   flex-direction: row;
   height: 480px;
+  margin: 0;
   position: relative;
 }
 

@@ -14,6 +14,7 @@ Display.prototype.setup = function () {
 };
 
 Display.prototype.setGrid = function () {
+  $('#grid').remove();
   this.$root.append('<ul>');
   $("ul").attr('id','grid').addClass('section');
   var $grid = $('#grid');

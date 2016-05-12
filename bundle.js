@@ -52,9 +52,11 @@
 	
 	  var $controls = $('#game-controls');
 	  $('<input id="start" type="button" value="start" />').click(function(event){
+	    // do some timeout shit here
 	    game.play();
 	  }).appendTo($controls);
 	  $('<input id="restart" type="button" value="restart" />').click(function(){
+	    $('#grid').remove();
 	    game = new Game($root);
 	  }).appendTo($controls);
 	  $('<input id="info" type="button" value="info" />').click(function(){
@@ -70,16 +72,28 @@
 	var Display = __webpack_require__(2);
 	var Board = __webpack_require__(5);
 	var Player = __webpack_require__(16);
+	var randomAI = __webpack_require__(17);
 	
 	var Game = function($root) {
 	  this.board = new Board();
 	  this.board.populate();
 	  this.display = new Display($root, this.board);
-	  this.players = {white: new Player(this.board), black: ''};
+	
+	  this.players = {
+	    white: new Player(this.board),
+	    black: new randomAI(this.board, this.display)
+	  };
+	
+	  this.renderBoard();
 	};
 	
 	Game.prototype.play = function () {
 	  this.display.setup();
+	  this.players.black.run();
+	};
+	
+	Game.prototype.renderBoard = function () {
+	  this.display.setGrid();
 	};
 	
 	module.exports = Game;
@@ -105,6 +119,7 @@
 	};
 	
 	Display.prototype.setGrid = function () {
+	  $('#grid').remove();
 	  this.$root.append('<ul>');
 	  $("ul").attr('id','grid').addClass('section');
 	  var $grid = $('#grid');
@@ -906,6 +921,40 @@
 	};
 	
 	module.exports = Player;
+
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	function RandomAI(board, display) {
+	  this.board = board;
+	  this.display = display;
+	}
+	
+	RandomAI.prototype.run = function () {
+	  setInterval(function() {
+	    var piece = this.randPiece();
+	    var move = this.randMove(piece);
+	    this.board.move(piece.pos, move, this.display.renderCB);
+	  }.bind(this), 250);
+	};
+	
+	RandomAI.prototype.randPiece = function () {
+	  var pieces = this.board.blackPieces.filter(function(piece) {
+	    return piece.isMoveable;
+	  });
+	  var randPiece = pieces[Math.floor(Math.random()*pieces.length)];
+	  return randPiece;
+	};
+	
+	RandomAI.prototype.randMove = function (piece) {
+	  var moves = piece.moves();
+	  var randMove = moves[Math.floor(Math.random()*moves.length)];
+	  return randMove;
+	};
+	
+	module.exports = RandomAI;
 
 
 /***/ }
