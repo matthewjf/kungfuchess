@@ -6,11 +6,16 @@ function RandomAI(board, display) {
 RandomAI.prototype.run = function () {
   this.intervalID = setInterval(function() {
     if (this.board.isGameOver())
-      clearInterval(this.intervalID).bind(this);
+      clearInterval(this.intervalID);
     var piece = this.randPiece();
     var move = this.randMove(piece);
     this.board.move(piece.pos, move, this.display.renderCB);
-  }.bind(this), 250);
+  }.bind(this), 500);
+};
+
+RandomAI.prototype.kill = function () {
+  if (this.intervalID)
+    clearInterval(this.intervalID);
 };
 
 RandomAI.prototype.randPiece = function () {

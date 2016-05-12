@@ -23,7 +23,9 @@ Board.prototype.move = function (startPos, endPos, renderCB) {
   }
 
   if (!Util.includesPos(endPos, this.piece(startPos).moves())) {
-    alert('something went wrong');
+    // alert('something went wrong');
+    // console.log('start: ' + startPos +' - end: ' + endPos);
+    // debugger;
     return console.log('tried to move to invalid pos');
   }
 
