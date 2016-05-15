@@ -12,7 +12,7 @@ Kungfu Chess is chess without turns. A copy of the original [Kung-Fu Chess](http
 
 Click start to begin a game.
 
-Click piece to select it and click the target position to move it. Any available piece can be moved at any time.
+Click a piece to select it and click the target position to move it. Any available piece can be moved at any time.
 
 A delay starts at the end of a piece's move. During this delay, a piece is unavailable to move until the delay is over.
 
@@ -69,4 +69,8 @@ This allows pieces to be intercepted by other pieces by either blocking it's mov
 
 ### AI Player
 
-Currently, only single player mode is supported. Black is played by the computer. The AI will attempt a move every second. When the AI attempts a move, it will check whether or not it can take the opponent's King and make that move if available. Otherwise, it check if any of its pieces can take a white piece and make that move if available. If none of these occur, it will take a randome piece and make a random move for that piece.
+Currently, only single player mode is supported. Black is played by the computer. The AI will attempt a move every second. The AI uses the following logic to select its move:
+
+- Take the opponent's King if any piece can
+- Take a black piece if any piece can
+- Select a random piece and make a random move for that piece
