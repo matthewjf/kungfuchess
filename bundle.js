@@ -52,7 +52,7 @@
 	
 	  var $controls = $('#game-controls');
 	  $('<input id="start" type="button" value="start" />').click(function(event){
-	    var $overlay = $('<div>').addClass('overlay').prependTo($('html'));
+	    var $overlay = $('<div>').addClass('overlay').prependTo($('body'));
 	    var $modal = $('<div>').addClass('modal').appendTo($overlay);
 	    var $countdown = $('<div>')
 	      .addClass('countdown')
@@ -85,10 +85,6 @@
 	  $('<input id="info" type="button" value="info" />').click(function(){
 	    window.open('https://en.wikipedia.org/wiki/Kung-Fu_Chess');
 	  }).appendTo($controls);
-	
-	  // $('<a target=_"blank" href="https://en.wikipedia.org/wiki/Kung-Fu_Chess"')
-	  //   .text("About Kungfu Chess")
-	  //   .appendTo($controls);
 	
 	});
 
@@ -253,7 +249,7 @@
 	  if (completionCB) {
 	    setTimeout(function(){
 	      completionCB(endPos);
-	    },250);
+	    }, Constants.MoveTime);
 	  }
 	}
 	
@@ -272,7 +268,7 @@
 	    setTimeout(function() {
 	      $piece.children().remove();
 	    }, Constants.Timer);
-	  },250);
+	  }, Constants.MoveTime);
 	}
 	
 	function removeSelected() {
@@ -298,7 +294,8 @@
 	  Pawn: "♟",
 	  Queen: "♛",
 	  Rook: "♜",
-	  Timer: 4000
+	  Timer: 5000,
+	  MoveTime: 500
 	};
 
 
@@ -356,7 +353,8 @@
 	
 	Board.prototype.move = function (startPos, endPos, renderCB) {
 	  if (this.isGameOver()) {
-	    alert('game over');
+	    this.destroy();
+	    $('<div>').attr('id', 'gameover').text('GAME OVER').prependTo($('#grid'));
 	    return console.log('game is over, stop playing');
 	  }
 	
@@ -366,9 +364,7 @@
 	  }
 	
 	  if (!Util.includesPos(endPos, this.piece(startPos).moves())) {
-	    // alert('something went wrong');
-	    // console.log('start: ' + startPos +' - end: ' + endPos);
-	    // debugger;
+	    alert('something went wrong');
 	    return console.log('tried to move to invalid pos');
 	  }
 	
@@ -523,11 +519,6 @@
 	  new Pieces.Queen({color: "black", board: this, pos: [0,3]});
 	  new Pieces.King({color: "black", board: this, pos: [0,4]});
 	  new Pieces.King({color: "white", board: this, pos: [7,4]});
-	
-	  // testing
-	  // new Pieces.King({color: "black", board: this, pos: [7,4]});
-	  // new Pieces.King({color: "white", board: this, pos: [0,4]});
-	  // new Pieces.Pawn({color: "black", board: this, pos: [6,1]});
 	};
 	
 	
@@ -680,7 +671,7 @@
 	    } else {
 	      setTimeout(function(){
 	        this.move(targetPos, renderCB);
-	      }.bind(this), 250);
+	      }.bind(this), Constants.MoveTime);
 	    }
 	  }
 	};
@@ -688,7 +679,7 @@
 	Piece.prototype.setTimer = function () {
 	  setTimeout(function() {
 	    this.isMoveable = true;
-	  }.bind(this), Constants.Timer + 500);
+	  }.bind(this), Constants.Timer + Constants.MoveTime);
 	};
 	
 	Piece.STRAIGHTS = [[-1, 0], [1, 0], [0, -1], [0, 1]];
@@ -826,7 +817,7 @@
 	  this.isMoveable = false;
 	  setTimeout(function() {
 	    this.isMoveable = true;
-	  }.bind(this), Constants.Timer + 500);
+	  }.bind(this), Constants.Timer + Constants.MoveTime);
 	};
 	
 	module.exports = Knight;
@@ -971,8 +962,8 @@
 	      rook.isMoveable = false;
 	      setTimeout(function() {
 	        rook.isMoveable = true;
-	      }, Constants.Timer + 500);
-	    }, 500);
+	      }, Constants.Timer + 550);
+	    }, 550);
 	  }
 	  Piece.prototype.move.call(this, targetPos, renderCB);
 	};
@@ -1060,7 +1051,7 @@
 	      var move = take ? take : this.randMove(piece);
 	      this.board.move(piece.pos, move, this.display.renderCB);
 	    }
-	  }.bind(this), 1250);
+	  }.bind(this), 1000);
 	};
 	
 	GreedyAI.prototype.kill = function () {

@@ -5,5 +5,6 @@ module.exports = {
   Pawn: "♟",
   Queen: "♛",
   Rook: "♜",
-  Timer: 4000
+  Timer: 5000,
+  MoveTime: 500
 };

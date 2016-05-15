@@ -110,7 +110,7 @@ function renderPieceMove(startPos, endPos, completionCB) {
   if (completionCB) {
     setTimeout(function(){
       completionCB(endPos);
-    },250);
+    }, Constants.MoveTime);
   }
 }
 
@@ -129,7 +129,7 @@ function renderTimer (pos) {
     setTimeout(function() {
       $piece.children().remove();
     }, Constants.Timer);
-  },250);
+  }, Constants.MoveTime);
 }
 
 function removeSelected() {

@@ -74,8 +74,8 @@ King.prototype.move = function (targetPos, renderCB) {
       rook.isMoveable = false;
       setTimeout(function() {
         rook.isMoveable = true;
-      }, Constants.Timer + 500);
-    }, 500);
+      }, Constants.Timer + 550);
+    }, 550);
   }
   Piece.prototype.move.call(this, targetPos, renderCB);
 };

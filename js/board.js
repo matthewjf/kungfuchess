@@ -14,7 +14,8 @@ var Board = function () {
 
 Board.prototype.move = function (startPos, endPos, renderCB) {
   if (this.isGameOver()) {
-    alert('game over');
+    this.destroy();
+    $('<div>').attr('id', 'gameover').text('GAME OVER').prependTo($('#grid'));
     return console.log('game is over, stop playing');
   }
 
@@ -24,9 +25,7 @@ Board.prototype.move = function (startPos, endPos, renderCB) {
   }
 
   if (!Util.includesPos(endPos, this.piece(startPos).moves())) {
-    // alert('something went wrong');
-    // console.log('start: ' + startPos +' - end: ' + endPos);
-    // debugger;
+    alert('something went wrong');
     return console.log('tried to move to invalid pos');
   }
 
@@ -181,11 +180,6 @@ Board.prototype.populate = function () {
   new Pieces.Queen({color: "black", board: this, pos: [0,3]});
   new Pieces.King({color: "black", board: this, pos: [0,4]});
   new Pieces.King({color: "white", board: this, pos: [7,4]});
-
-  // testing
-  // new Pieces.King({color: "black", board: this, pos: [7,4]});
-  // new Pieces.King({color: "white", board: this, pos: [0,4]});
-  // new Pieces.Pawn({color: "black", board: this, pos: [6,1]});
 };
 
 

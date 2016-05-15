@@ -62,7 +62,7 @@ Piece.prototype.move = function (targetPos, renderCB) {
     } else {
       setTimeout(function(){
         this.move(targetPos, renderCB);
-      }.bind(this), 250);
+      }.bind(this), Constants.MoveTime);
     }
   }
 };
@@ -70,7 +70,7 @@ Piece.prototype.move = function (targetPos, renderCB) {
 Piece.prototype.setTimer = function () {
   setTimeout(function() {
     this.isMoveable = true;
-  }.bind(this), Constants.Timer + 500);
+  }.bind(this), Constants.Timer + Constants.MoveTime);
 };
 
 Piece.STRAIGHTS = [[-1, 0], [1, 0], [0, -1], [0, 1]];

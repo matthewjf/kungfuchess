@@ -6,7 +6,7 @@ $(function () {
 
   var $controls = $('#game-controls');
   $('<input id="start" type="button" value="start" />').click(function(event){
-    var $overlay = $('<div>').addClass('overlay').prependTo($('html'));
+    var $overlay = $('<div>').addClass('overlay').prependTo($('body'));
     var $modal = $('<div>').addClass('modal').appendTo($overlay);
     var $countdown = $('<div>')
       .addClass('countdown')
@@ -39,9 +39,5 @@ $(function () {
   $('<input id="info" type="button" value="info" />').click(function(){
     window.open('https://en.wikipedia.org/wiki/Kung-Fu_Chess');
   }).appendTo($controls);
-
-  // $('<a target=_"blank" href="https://en.wikipedia.org/wiki/Kung-Fu_Chess"')
-  //   .text("About Kungfu Chess")
-  //   .appendTo($controls);
 
 });
