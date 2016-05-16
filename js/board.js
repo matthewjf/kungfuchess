@@ -14,8 +14,8 @@ var Board = function () {
 
 Board.prototype.move = function (startPos, endPos, renderCB) {
   if (this.isGameOver()) {
-    this.destroy();
     $('<div>').attr('id', 'gameover').text('GAME OVER').prependTo($('#grid'));
+    this.destroy();
     return console.log('game is over, stop playing');
   }
 

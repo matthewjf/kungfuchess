@@ -3,6 +3,7 @@ var Board = require('./board');
 var Player = require('./player');
 var randomAI = require('./randomAI');
 var greedyAI = require('./greedyAI');
+var AI = require('./AI');
 
 var Game = function($root) {
   this.board = new Board();
@@ -12,7 +13,7 @@ var Game = function($root) {
 
   this.players = {
     white: new Player(this.board),
-    black: new greedyAI(this.board, this.display)
+    black: new AI(this.board, this.display)
   };
 
   this.renderBoard();

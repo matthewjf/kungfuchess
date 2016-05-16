@@ -70,7 +70,7 @@ Piece.prototype.move = function (targetPos, renderCB) {
 Piece.prototype.setTimer = function () {
   setTimeout(function() {
     this.isMoveable = true;
-  }.bind(this), Constants.Timer + Constants.MoveTime);
+  }.bind(this), Constants.Timer + Constants.MoveTime + 250);
 };
 
 Piece.STRAIGHTS = [[-1, 0], [1, 0], [0, -1], [0, 1]];

@@ -41,7 +41,7 @@ Knight.prototype.move = function (targetPos, renderCB) {
   this.isMoveable = false;
   setTimeout(function() {
     this.isMoveable = true;
-  }.bind(this), Constants.Timer + Constants.MoveTime);
+  }.bind(this), Constants.Timer + Constants.MoveTime + 250);
 };
 
 module.exports = Knight;
