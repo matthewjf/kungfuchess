@@ -117,11 +117,13 @@ function renderPieceMove(startPos, endPos, completionCB) {
 function removePiece(pos) {
   var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
   $piece.empty();
+  $piece.children().remove();
   $piece.remove();
 }
 
 function renderTimer (pos) {
   var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
+  $piece.children().remove();
   $('<div>').addClass('timer').appendTo($piece);
 
   setTimeout(function(){

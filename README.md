@@ -69,7 +69,14 @@ This allows pieces to be intercepted by other pieces by either blocking it's mov
 
 ### AI Player
 
-Currently, only single player mode is supported. Black is played by the computer. The AI will attempt a move every second. The AI uses the following logic to select its move:
+Currently, only single player mode is supported. Black is played by the computer.
+
+The AI runs 2 intervals to make moves. One interval runs every half second and attempts to protect the king with the following logic:
+
+- If a piece threatens the king, the AI will attempt to take the piece
+- If it cannot take the piece, it will attempt to move the king to a safe position
+
+The second interval will move other pieces according to the following logic and runs every second:
 
 - Take the opponent's King if any piece can
 - Take a black piece if any piece can

@@ -39,6 +39,10 @@ Knight.prototype.move = function (targetPos, renderCB) {
   }
 
   this.isMoveable = false;
+  
+  if (this.board.isGameOver())
+    $('<div>').attr('id', 'gameover').text('GAME OVER').prependTo($('#grid'));
+
   setTimeout(function() {
     this.isMoveable = true;
   }.bind(this), Constants.Timer + Constants.MoveTime + 250);

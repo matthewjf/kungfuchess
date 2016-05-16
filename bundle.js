@@ -257,11 +257,13 @@
 	function removePiece(pos) {
 	  var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
 	  $piece.empty();
+	  $piece.children().remove();
 	  $piece.remove();
 	}
 	
 	function renderTimer (pos) {
 	  var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
+	  $piece.children().remove();
 	  $('<div>').addClass('timer').appendTo($piece);
 	
 	  setTimeout(function(){
@@ -354,7 +356,6 @@
 	
 	Board.prototype.move = function (startPos, endPos, renderCB) {
 	  if (this.isGameOver()) {
-	    $('<div>').attr('id', 'gameover').text('GAME OVER').prependTo($('#grid'));
 	    this.destroy();
 	    return console.log('game is over, stop playing');
 	  }
@@ -663,6 +664,8 @@
 	    }
 	
 	    if (stopMoving) {
+	      if (this.board.isGameOver())
+	        $('<div>').attr('id', 'gameover').text('GAME OVER').prependTo($('#grid'));
 	      if (this.type() === 'Pawn' && (this.pos[0] === 7 || this.pos[0] === 0)) {
 	        this.board.promotePawn(this, renderCB);
 	      } else {
@@ -816,6 +819,10 @@
 	  }
 	
 	  this.isMoveable = false;
+	  
+	  if (this.board.isGameOver())
+	    $('<div>').attr('id', 'gameover').text('GAME OVER').prependTo($('#grid'));
+	
 	  setTimeout(function() {
 	    this.isMoveable = true;
 	  }.bind(this), Constants.Timer + Constants.MoveTime + 250);
