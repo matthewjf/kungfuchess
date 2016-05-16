@@ -1143,7 +1143,8 @@
 	    if (this.board.isGameOver())
 	      this.kill();
 	    var piece = this.findPiece();
-	    if (piece) {
+	    
+	    if (piece && !(piece.type() === 'King')) {
 	      var take = this.takeableMove(piece);
 	      var move = take ? take : this.randMove(piece);
 	      this.board.move(piece.pos, move, this.display.renderCB);
@@ -1188,7 +1189,7 @@
 	};
 	
 	AI.prototype.takeableMove = function (piece) {
-	  if (typeof piece === 'undefined')
+	  if (typeof piece === 'undefined' )
 	    return;
 	
 	  var move;
