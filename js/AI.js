@@ -1,27 +1,38 @@
 var Util = require('./util');
+var Constants = require('./constants');
 
 function AI(board, display) {
   this.board = board;
   this.display = display;
+  if (this.board.speed === Constants.Slow)
+    this.speed = 1500;
+  else if (this.board.speed === Constants.Normal)
+    this.speed = 1000;
+  else
+    this.speed = 750;
 }
+
+AI.prototype.setSpeed = function (speed) {
+  this.speed = speed;
+};
 
 AI.prototype.run = function () {
   this.moveInterval = setInterval(function() {
     if (this.board.isGameOver())
       this.kill();
     var piece = this.findPiece();
-    
+
     if (piece && !(piece.type() === 'King')) {
       var take = this.takeableMove(piece);
       var move = take ? take : this.randMove(piece);
       this.board.move(piece.pos, move, this.display.renderCB);
     }
-  }.bind(this), 1250);
+  }.bind(this), (this.speed));
   this.kingInterval = setInterval(function(){
     if (this.board.isGameOver())
       this.kill();
     this.protectKing();
-  }.bind(this), 500);
+  }.bind(this), (this.speed / 2));
 };
 
 AI.prototype.kill = function () {

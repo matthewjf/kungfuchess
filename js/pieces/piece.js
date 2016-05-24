@@ -79,11 +79,13 @@ Piece.prototype.setTimer = function () {
 
 Piece.prototype.checkGameOver = function () {
   if (this.board.isGameOver()) {
-    $('<div>')
-      .attr('id', 'gameover')
-      .text('GAME OVER')
-      .prependTo($('#grid'));
-    $('<div>').addClass('overlay').prependTo($('#game'));
+    if ($('#gameover').length === 0)
+      $('<div>')
+        .attr('id', 'gameover')
+        .text('GAME OVER')
+        .prependTo($('#grid'));
+    if ($('#overlay').length === 0)
+      $('<div>').attr('id', 'overlay').prependTo($('#game'));
     $('.piece').removeClass('selected');
     $('.square').removeClass('valid-move');
   }

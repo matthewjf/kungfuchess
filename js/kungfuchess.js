@@ -24,7 +24,7 @@ $(function () {
   $('<input id="start" type="button" value="start" />').click(function(event){
     game = new Game($root);
 
-    var $overlay = $('.overlay');
+    var $overlay = $('#overlay');
     var $countdown = $('.countdown').text('3');
 
     $('#start').prop('disabled', true);
@@ -50,7 +50,7 @@ $(function () {
     $('.overlay').remove();
     game.destroy();
     game = new Game($root);
-    var $overlay = $('<div>').addClass('overlay').appendTo('#game');
+    var $overlay = $('<div>').attr('id', 'overlay').appendTo('#game');
     var $countdown = $('<div>')
       .addClass('countdown')
       .appendTo($overlay);
@@ -68,6 +68,6 @@ $(function () {
   }).appendTo($controls);
 
   var game = new Game($root);
-  $('<div>').addClass('overlay').prependTo($('#game'));
-  $('<div>').addClass('countdown').appendTo($('.overlay'));
+  $('<div>').attr('id', 'overlay').prependTo($('#game'));
+  $('<div>').addClass('countdown').appendTo($('#overlay'));
 });

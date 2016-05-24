@@ -70,7 +70,7 @@
 	  $('<input id="start" type="button" value="start" />').click(function(event){
 	    game = new Game($root);
 	
-	    var $overlay = $('.overlay');
+	    var $overlay = $('#overlay');
 	    var $countdown = $('.countdown').text('3');
 	
 	    $('#start').prop('disabled', true);
@@ -96,7 +96,7 @@
 	    $('.overlay').remove();
 	    game.destroy();
 	    game = new Game($root);
-	    var $overlay = $('<div>').addClass('overlay').appendTo('#game');
+	    var $overlay = $('<div>').attr('id', 'overlay').appendTo('#game');
 	    var $countdown = $('<div>')
 	      .addClass('countdown')
 	      .appendTo($overlay);
@@ -114,8 +114,8 @@
 	  }).appendTo($controls);
 	
 	  var game = new Game($root);
-	  $('<div>').addClass('overlay').prependTo($('#game'));
-	  $('<div>').addClass('countdown').appendTo($('.overlay'));
+	  $('<div>').attr('id', 'overlay').prependTo($('#game'));
+	  $('<div>').addClass('countdown').appendTo($('#overlay'));
 	});
 
 
@@ -285,7 +285,7 @@
 	
 	  if (completionCB) {
 	    setTimeout(function(){
-	      completionCB(endPos, timerAmount);
+	      completionCB($piece, timerAmount);
 	    }, Constants.MoveTime);
 	  }
 	}
@@ -297,10 +297,10 @@
 	  $piece.remove();
 	}
 	
-	function renderTimer (pos, timerAmount) {
-	  var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
+	function renderTimer ($piece, timerAmount) {
+	  // var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
 	  $piece.children().remove();
-	  $('<div>')
+	  var $timer = $('<div>')
 	    .addClass('timer')
 	    .css({transition: "all " + (timerAmount / 1000).toString() + "s linear"})
 	    .appendTo($piece);
@@ -308,7 +308,8 @@
 	  setTimeout(function(){
 	    $piece.children().css({height: '0px', marginTop: '60px'});
 	    setTimeout(function() {
-	      $piece.children().remove();
+	      $timer.empty();
+	      $timer.remove();
 	    }, timerAmount);
 	  }, 25);
 	}
@@ -389,7 +390,7 @@
 	  this.grid = [];
 	  this.whitePieces = [];
 	  this.blackPieces = [];
-	  this.speed = 5000;
+	  this.setSpeed();
 	
 	  for (var i = 0; i < 8; i++) {
 	    this.grid.push([null,null,null,null,null,null,null,null]);
@@ -742,11 +743,13 @@
 	
 	Piece.prototype.checkGameOver = function () {
 	  if (this.board.isGameOver()) {
-	    $('<div>')
-	      .attr('id', 'gameover')
-	      .text('GAME OVER')
-	      .prependTo($('#grid'));
-	    $('<div>').addClass('overlay').prependTo($('#game'));
+	    if ($('#gameover').length === 0)
+	      $('<div>')
+	        .attr('id', 'gameover')
+	        .text('GAME OVER')
+	        .prependTo($('#grid'));
+	    if ($('#overlay').length === 0)
+	      $('<div>').attr('id', 'overlay').prependTo($('#game'));
 	    $('.piece').removeClass('selected');
 	    $('.square').removeClass('valid-move');
 	  }
@@ -885,12 +888,8 @@
 	  }
 	
 	  this.isMoveable = false;
-	
-	  if (this.board.isGameOver()) {
-	    $('<div>').attr('id', 'gameover').text('GAME OVER').prependTo($('#grid'));
-	    $('<div>').addClass('overlay').prependTo($('#game'));
-	  }
-	
+	  
+	  this.checkGameOver();
 	  this.setTimer();
 	};
 	
@@ -1198,29 +1197,40 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var Util = __webpack_require__(4);
+	var Constants = __webpack_require__(3);
 	
 	function AI(board, display) {
 	  this.board = board;
 	  this.display = display;
+	  if (this.board.speed === Constants.Slow)
+	    this.speed = 1500;
+	  else if (this.board.speed === Constants.Normal)
+	    this.speed = 1000;
+	  else
+	    this.speed = 750;
 	}
+	
+	AI.prototype.setSpeed = function (speed) {
+	  this.speed = speed;
+	};
 	
 	AI.prototype.run = function () {
 	  this.moveInterval = setInterval(function() {
 	    if (this.board.isGameOver())
 	      this.kill();
 	    var piece = this.findPiece();
-	    
+	
 	    if (piece && !(piece.type() === 'King')) {
 	      var take = this.takeableMove(piece);
 	      var move = take ? take : this.randMove(piece);
 	      this.board.move(piece.pos, move, this.display.renderCB);
 	    }
-	  }.bind(this), 1250);
+	  }.bind(this), (this.speed));
 	  this.kingInterval = setInterval(function(){
 	    if (this.board.isGameOver())
 	      this.kill();
 	    this.protectKing();
-	  }.bind(this), 500);
+	  }.bind(this), (this.speed / 2));
 	};
 	
 	AI.prototype.kill = function () {

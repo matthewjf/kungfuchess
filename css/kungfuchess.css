@@ -268,7 +268,7 @@ a {
   margin-top: 60px;
 }
 
-.overlay {
+#overlay {
   position: absolute;
   z-index: 99;
   top: 0;

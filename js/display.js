@@ -110,7 +110,7 @@ function renderPieceMove(startPos, endPos, completionCB, timerAmount) {
 
   if (completionCB) {
     setTimeout(function(){
-      completionCB(endPos, timerAmount);
+      completionCB($piece, timerAmount);
     }, Constants.MoveTime);
   }
 }
@@ -122,10 +122,10 @@ function removePiece(pos) {
   $piece.remove();
 }
 
-function renderTimer (pos, timerAmount) {
-  var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
+function renderTimer ($piece, timerAmount) {
+  // var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
   $piece.children().remove();
-  $('<div>')
+  var $timer = $('<div>')
     .addClass('timer')
     .css({transition: "all " + (timerAmount / 1000).toString() + "s linear"})
     .appendTo($piece);
@@ -133,7 +133,8 @@ function renderTimer (pos, timerAmount) {
   setTimeout(function(){
     $piece.children().css({height: '0px', marginTop: '60px'});
     setTimeout(function() {
-      $piece.children().remove();
+      $timer.empty();
+      $timer.remove();
     }, timerAmount);
   }, 25);
 }

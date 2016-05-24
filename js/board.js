@@ -6,7 +6,7 @@ var Board = function () {
   this.grid = [];
   this.whitePieces = [];
   this.blackPieces = [];
-  this.speed = 5000;
+  this.setSpeed();
 
   for (var i = 0; i < 8; i++) {
     this.grid.push([null,null,null,null,null,null,null,null]);
