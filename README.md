@@ -14,7 +14,7 @@ Click start to begin a game.
 
 Click a piece to select it and click the target position to move it. Any available piece can be moved at any time.
 
-A delay starts at the end of a piece's move. During this delay, a piece is unavailable to move until the delay is over.
+A delay starts at the end of a piece's move. During this delay, a piece is unavailable to move until the delay is over. The delay amount is determined by the selected speed setting.
 
 The game ends when either King is taken.
 
@@ -37,7 +37,7 @@ In order to make the animation work using CSS transition, each piece belongs to 
 `Display` move function:
 
 ```javascript
-function renderPieceMove(startPos, endPos, completionCB) {
+function renderPieceMove(startPos, endPos, completionCB, timerAmount) {
   var $piece = $('div[pos="' + startPos[0] + ',' + startPos[1] + '"]');
 
   var top = 60 * endPos[0];
@@ -48,7 +48,7 @@ function renderPieceMove(startPos, endPos, completionCB) {
 
   if (completionCB) {
     setTimeout(function(){
-      completionCB(endPos);
+      completionCB(endPos, timerAmount);
     }, Constants.MoveTime);
   }
 }
@@ -63,8 +63,8 @@ This allows pieces to be intercepted by other pieces by either blocking it's mov
 ###### Notes:
 - Knights do not traverse squares and cannot be intercepted
 - Pawns are automatically promoted to Queens
-- En passant does not work
 - A piece may be intercepted by the piece it is attacking (timing this is difficult)
+- En passant does not work after a move (you must take it during its move)
 
 
 ### AI Player
