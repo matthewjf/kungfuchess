@@ -7,14 +7,14 @@ $(function () {
   var $settings = $('#game-settings');
   $settings.text('Speed');
   $('<div id="slow" class="setting button">').text('slow').appendTo($settings);
-  $('<div id="medium" class="setting button">').text('medium').appendTo($settings);
+  $('<div id="normal" class="setting button">').text('normal').appendTo($settings);
   $('<div id="fast" class="setting button">').text('fast').appendTo($settings);
   $('.setting').click(function(event) {
     $('.indicator').removeClass('active');
     $(event.currentTarget).children('.indicator').addClass('active');
   });
   $('.setting').prepend($('<div class="indicator"/>'));
-  $('#medium').children('.indicator').addClass('active');
+  $('#normal').children('.indicator').addClass('active');
 
 
   var $controls = $('#game-controls');

@@ -148,10 +148,10 @@ Board.prototype.destroy = function () {
 };
 
 Board.prototype.setSpeed = function () {
-  if ($('#medium').children('.indicator').hasClass('active'))
+  if ($('#normal').children('.indicator').hasClass('active'))
     this.speed = Constants.Slow;
   else if ($('#slow').children('.indicator').hasClass('active'))
-    this.speed = Constants.Medium;
+    this.speed = Constants.Normal;
   else
     this.speed = Constants.Fast;
 };

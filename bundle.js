@@ -53,14 +53,14 @@
 	  var $settings = $('#game-settings');
 	  $settings.text('Speed');
 	  $('<div id="slow" class="setting button">').text('slow').appendTo($settings);
-	  $('<div id="medium" class="setting button">').text('medium').appendTo($settings);
+	  $('<div id="normal" class="setting button">').text('normal').appendTo($settings);
 	  $('<div id="fast" class="setting button">').text('fast').appendTo($settings);
 	  $('.setting').click(function(event) {
 	    $('.indicator').removeClass('active');
 	    $(event.currentTarget).children('.indicator').addClass('active');
 	  });
 	  $('.setting').prepend($('<div class="indicator"/>'));
-	  $('#medium').children('.indicator').addClass('active');
+	  $('#normal').children('.indicator').addClass('active');
 	
 	
 	  var $controls = $('#game-controls');
@@ -337,7 +337,7 @@
 	  Rook: "♜",
 	  MoveTime: 500,
 	  Slow: 8000,
-	  Medium: 5000,
+	  Normal: 5000,
 	  Fast: 2000
 	};
 
@@ -530,10 +530,10 @@
 	};
 	
 	Board.prototype.setSpeed = function () {
-	  if ($('#medium').children('.indicator').hasClass('active'))
+	  if ($('#normal').children('.indicator').hasClass('active'))
 	    this.speed = Constants.Slow;
 	  else if ($('#slow').children('.indicator').hasClass('active'))
-	    this.speed = Constants.Medium;
+	    this.speed = Constants.Normal;
 	  else
 	    this.speed = Constants.Fast;
 	};
