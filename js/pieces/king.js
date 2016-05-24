@@ -63,7 +63,7 @@ King.prototype.move = function (targetPos, renderCB) {
     setTimeout(function() {
       var newPos = left ? [rook.pos[0], 3] : [rook.pos[0], 5];
       var oldPos = rook.pos;
-      renderCB(rook.pos, newPos, true);
+      renderCB(rook.pos, newPos, true, this.board.speed);
       b.clearPos(rook.pos);
       if (left)
         rook.setPos([oldPos[0], 3]);
@@ -74,8 +74,8 @@ King.prototype.move = function (targetPos, renderCB) {
       rook.isMoveable = false;
       setTimeout(function() {
         rook.isMoveable = true;
-      }, Constants.Timer + 550);
-    }, 550);
+      }, this.board.speed + 550);
+    }.bind(this), 550);
   }
   Piece.prototype.move.call(this, targetPos, renderCB);
 };

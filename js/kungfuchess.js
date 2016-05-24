@@ -2,7 +2,18 @@ var Game = require('./game');
 
 $(function () {
   var $root = $('#game');
-  var game = new Game($root);
+
+  var $settings = $('#game-settings');
+  $settings.text('Speed');
+  $('<div id="slow" class="setting button">').text('slow').appendTo($settings);
+  $('<div id="medium" class="setting button">').text('medium').appendTo($settings);
+  $('<div id="fast" class="setting button">').text('fast').appendTo($settings);
+  $('.setting').click(function(event) {
+    $('.indicator').removeClass('active');
+    $(event.currentTarget).children('.indicator').addClass('active');
+  });
+  $('.setting').prepend($('<div class="indicator"/>'));
+  $('#medium').children('.indicator').addClass('active');
 
   var $controls = $('#game-controls');
   $('<input id="start" type="button" value="start" />').click(function(event){
@@ -40,4 +51,5 @@ $(function () {
     window.open('https://en.wikipedia.org/wiki/Kung-Fu_Chess');
   }).appendTo($controls);
 
+  var game = new Game($root);
 });

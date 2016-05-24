@@ -6,6 +6,7 @@ var Board = function () {
   this.grid = [];
   this.whitePieces = [];
   this.blackPieces = [];
+  this.speed = 5000;
 
   for (var i = 0; i < 8; i++) {
     this.grid.push([null,null,null,null,null,null,null,null]);
@@ -146,7 +147,17 @@ Board.prototype.destroy = function () {
   this.blackPieces = [];
 };
 
+Board.prototype.setSpeed = function () {
+  if ($('#medium').children('.indicator').hasClass('active'))
+    this.speed = Constants.Slow;
+  else if ($('#slow').children('.indicator').hasClass('active'))
+    this.speed = Constants.Medium;
+  else
+    this.speed = Constants.Fast;
+};
+
 Board.prototype.populate = function () {
+  this.setSpeed();
   new Pieces.Pawn({color: "black", board: this, pos: [1,0]});
   new Pieces.Pawn({color: "black", board: this, pos: [1,1]});
   new Pieces.Pawn({color: "black", board: this, pos: [1,2]});

@@ -7,7 +7,6 @@ var AI = require('./AI');
 
 var Game = function($root) {
   this.board = new Board();
-  this.board.populate();
   this.display = new Display($root, this.board);
   this.running = false;
 
@@ -20,6 +19,7 @@ var Game = function($root) {
 };
 
 Game.prototype.play = function () {
+  this.board.populate();
   this.display.setup();
   this.players.black.run();
   this.running = true;

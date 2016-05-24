@@ -89,16 +89,16 @@ Display.prototype.renderPiece = function(piece) {
     .appendTo($pieces);
 };
 
-Display.prototype.renderCB = function (startPos, endPos, moveCompleted) {
+Display.prototype.renderCB = function (startPos, endPos, moveCompleted, timerAmount) {
   removePiece(endPos);
   if (moveCompleted) {
-    renderPieceMove(startPos, endPos, renderTimer);
+    renderPieceMove(startPos, endPos, renderTimer, timerAmount);
   } else {
     renderPieceMove(startPos, endPos);
   }
 };
 
-function renderPieceMove(startPos, endPos, completionCB) {
+function renderPieceMove(startPos, endPos, completionCB, timerAmount) {
   var $piece = $('div[pos="' + startPos[0] + ',' + startPos[1] + '"]');
 
   var top = 60 * endPos[0];
@@ -109,7 +109,7 @@ function renderPieceMove(startPos, endPos, completionCB) {
 
   if (completionCB) {
     setTimeout(function(){
-      completionCB(endPos);
+      completionCB(endPos, timerAmount);
     }, Constants.MoveTime);
   }
 }
@@ -121,16 +121,19 @@ function removePiece(pos) {
   $piece.remove();
 }
 
-function renderTimer (pos) {
+function renderTimer (pos, timerAmount) {
   var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
   $piece.children().remove();
-  $('<div>').addClass('timer').appendTo($piece);
+  $('<div>')
+    .addClass('timer')
+    .css({transition: "all " + (timerAmount / 1000).toString() + "s linear"})
+    .appendTo($piece);
 
   setTimeout(function(){
     $piece.children().css({height: '0px', marginTop: '60px'});
     setTimeout(function() {
       $piece.children().remove();
-    }, Constants.Timer);
+    }, timerAmount);
   }, Constants.MoveTime);
 }
 

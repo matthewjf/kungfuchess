@@ -27,7 +27,7 @@ Knight.prototype.move = function (targetPos, renderCB) {
 
   var b = this.board;
 
-  renderCB(this.pos, targetPos, true);
+  renderCB(this.pos, targetPos, true, this.board.speed);
 
   this.board.clearPos(this.pos);
   this.board.removePiece(targetPos);
@@ -39,13 +39,11 @@ Knight.prototype.move = function (targetPos, renderCB) {
   }
 
   this.isMoveable = false;
-  
+
   if (this.board.isGameOver())
     $('<div>').attr('id', 'gameover').text('GAME OVER').prependTo($('#grid'));
 
-  setTimeout(function() {
-    this.isMoveable = true;
-  }.bind(this), Constants.Timer + Constants.MoveTime + 250);
+  this.setTimer();
 };
 
 module.exports = Knight;

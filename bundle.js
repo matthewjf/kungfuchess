@@ -48,7 +48,18 @@
 	
 	$(function () {
 	  var $root = $('#game');
-	  var game = new Game($root);
+	
+	  var $settings = $('#game-settings');
+	  $settings.text('Speed');
+	  $('<div id="slow" class="setting button">').text('slow').appendTo($settings);
+	  $('<div id="medium" class="setting button">').text('medium').appendTo($settings);
+	  $('<div id="fast" class="setting button">').text('fast').appendTo($settings);
+	  $('.setting').click(function(event) {
+	    $('.indicator').removeClass('active');
+	    $(event.currentTarget).children('.indicator').addClass('active');
+	  });
+	  $('.setting').prepend($('<div class="indicator"/>'));
+	  $('#medium').children('.indicator').addClass('active');
 	
 	  var $controls = $('#game-controls');
 	  $('<input id="start" type="button" value="start" />').click(function(event){
@@ -86,6 +97,7 @@
 	    window.open('https://en.wikipedia.org/wiki/Kung-Fu_Chess');
 	  }).appendTo($controls);
 	
+	  var game = new Game($root);
 	});
 
 
@@ -102,7 +114,6 @@
 	
 	var Game = function($root) {
 	  this.board = new Board();
-	  this.board.populate();
 	  this.display = new Display($root, this.board);
 	  this.running = false;
 	
@@ -115,6 +126,7 @@
 	};
 	
 	Game.prototype.play = function () {
+	  this.board.populate();
 	  this.display.setup();
 	  this.players.black.run();
 	  this.running = true;
@@ -229,16 +241,16 @@
 	    .appendTo($pieces);
 	};
 	
-	Display.prototype.renderCB = function (startPos, endPos, moveCompleted) {
+	Display.prototype.renderCB = function (startPos, endPos, moveCompleted, timerAmount) {
 	  removePiece(endPos);
 	  if (moveCompleted) {
-	    renderPieceMove(startPos, endPos, renderTimer);
+	    renderPieceMove(startPos, endPos, renderTimer, timerAmount);
 	  } else {
 	    renderPieceMove(startPos, endPos);
 	  }
 	};
 	
-	function renderPieceMove(startPos, endPos, completionCB) {
+	function renderPieceMove(startPos, endPos, completionCB, timerAmount) {
 	  var $piece = $('div[pos="' + startPos[0] + ',' + startPos[1] + '"]');
 	
 	  var top = 60 * endPos[0];
@@ -249,7 +261,7 @@
 	
 	  if (completionCB) {
 	    setTimeout(function(){
-	      completionCB(endPos);
+	      completionCB(endPos, timerAmount);
 	    }, Constants.MoveTime);
 	  }
 	}
@@ -261,16 +273,19 @@
 	  $piece.remove();
 	}
 	
-	function renderTimer (pos) {
+	function renderTimer (pos, timerAmount) {
 	  var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
 	  $piece.children().remove();
-	  $('<div>').addClass('timer').appendTo($piece);
+	  $('<div>')
+	    .addClass('timer')
+	    .css({transition: "all " + (timerAmount / 1000).toString() + "s linear"})
+	    .appendTo($piece);
 	
 	  setTimeout(function(){
 	    $piece.children().css({height: '0px', marginTop: '60px'});
 	    setTimeout(function() {
 	      $piece.children().remove();
-	    }, Constants.Timer);
+	    }, timerAmount);
 	  }, Constants.MoveTime);
 	}
 	
@@ -297,8 +312,10 @@
 	  Pawn: "♟",
 	  Queen: "♛",
 	  Rook: "♜",
-	  Timer: 5000,
-	  MoveTime: 500
+	  MoveTime: 500,
+	  Slow: 10000,
+	  Medium: 5000,
+	  Fast: 2000
 	};
 
 
@@ -348,6 +365,7 @@
 	  this.grid = [];
 	  this.whitePieces = [];
 	  this.blackPieces = [];
+	  this.speed = 5000;
 	
 	  for (var i = 0; i < 8; i++) {
 	    this.grid.push([null,null,null,null,null,null,null,null]);
@@ -488,7 +506,17 @@
 	  this.blackPieces = [];
 	};
 	
+	Board.prototype.setSpeed = function () {
+	  if ($('#medium').children('.indicator').hasClass('active'))
+	    this.speed = Constants.Slow;
+	  else if ($('#slow').children('.indicator').hasClass('active'))
+	    this.speed = Constants.Medium;
+	  else
+	    this.speed = Constants.Fast;
+	};
+	
 	Board.prototype.populate = function () {
+	  this.setSpeed();
 	  new Pieces.Pawn({color: "black", board: this, pos: [1,0]});
 	  new Pieces.Pawn({color: "black", board: this, pos: [1,1]});
 	  new Pieces.Pawn({color: "black", board: this, pos: [1,2]});
@@ -649,7 +677,10 @@
 	    if (Util.posEquals(newPos, targetPos) || (b.hasPiece(newPos) && b.piece(newPos).color !== this.color)) {
 	      stopMoving = true;
 	    }
-	    renderCB(this.pos, newPos, stopMoving);
+	    if (stopMoving)
+	      renderCB(this.pos, newPos, stopMoving, this.board.speed);
+	    else
+	      renderCB(this.pos, newPos, stopMoving);
 	
 	    this.board.removePiece(newPos);
 	    this.board.clearPos(this.pos);
@@ -683,7 +714,7 @@
 	Piece.prototype.setTimer = function () {
 	  setTimeout(function() {
 	    this.isMoveable = true;
-	  }.bind(this), Constants.Timer + Constants.MoveTime + 250);
+	  }.bind(this), this.board.speed + Constants.MoveTime + 250);
 	};
 	
 	Piece.STRAIGHTS = [[-1, 0], [1, 0], [0, -1], [0, 1]];
@@ -807,7 +838,7 @@
 	
 	  var b = this.board;
 	
-	  renderCB(this.pos, targetPos, true);
+	  renderCB(this.pos, targetPos, true, this.board.speed);
 	
 	  this.board.clearPos(this.pos);
 	  this.board.removePiece(targetPos);
@@ -819,13 +850,11 @@
 	  }
 	
 	  this.isMoveable = false;
-	  
+	
 	  if (this.board.isGameOver())
 	    $('<div>').attr('id', 'gameover').text('GAME OVER').prependTo($('#grid'));
 	
-	  setTimeout(function() {
-	    this.isMoveable = true;
-	  }.bind(this), Constants.Timer + Constants.MoveTime + 250);
+	  this.setTimer();
 	};
 	
 	module.exports = Knight;
@@ -959,7 +988,7 @@
 	    setTimeout(function() {
 	      var newPos = left ? [rook.pos[0], 3] : [rook.pos[0], 5];
 	      var oldPos = rook.pos;
-	      renderCB(rook.pos, newPos, true);
+	      renderCB(rook.pos, newPos, true, this.board.speed);
 	      b.clearPos(rook.pos);
 	      if (left)
 	        rook.setPos([oldPos[0], 3]);
@@ -970,8 +999,8 @@
 	      rook.isMoveable = false;
 	      setTimeout(function() {
 	        rook.isMoveable = true;
-	      }, Constants.Timer + 550);
-	    }, 550);
+	      }, this.board.speed + 550);
+	    }.bind(this), 550);
 	  }
 	  Piece.prototype.move.call(this, targetPos, renderCB);
 	};

@@ -38,7 +38,10 @@ Piece.prototype.move = function (targetPos, renderCB) {
     if (Util.posEquals(newPos, targetPos) || (b.hasPiece(newPos) && b.piece(newPos).color !== this.color)) {
       stopMoving = true;
     }
-    renderCB(this.pos, newPos, stopMoving);
+    if (stopMoving)
+      renderCB(this.pos, newPos, stopMoving, this.board.speed);
+    else
+      renderCB(this.pos, newPos, stopMoving);
 
     this.board.removePiece(newPos);
     this.board.clearPos(this.pos);
@@ -72,7 +75,7 @@ Piece.prototype.move = function (targetPos, renderCB) {
 Piece.prototype.setTimer = function () {
   setTimeout(function() {
     this.isMoveable = true;
-  }.bind(this), Constants.Timer + Constants.MoveTime + 250);
+  }.bind(this), this.board.speed + Constants.MoveTime + 250);
 };
 
 Piece.STRAIGHTS = [[-1, 0], [1, 0], [0, -1], [0, 1]];
