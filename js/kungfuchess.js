@@ -1,4 +1,5 @@
 var Game = require('./game');
+var Info = require('./info');
 
 $(function () {
   $('body').addClass('no-select');
@@ -64,7 +65,7 @@ $(function () {
 
   // INFO
   $('<input id="info" type="button" value="info" />').click(function(){
-    window.open('https://en.wikipedia.org/wiki/Kung-Fu_Chess');
+    Info.openModal();
   }).appendTo($controls);
 
   var game = new Game($root);

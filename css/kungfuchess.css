@@ -59,6 +59,68 @@ a {
   position: relative;
 }
 
+#modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+  background-color: hsla(0,0%,0%,.3);
+}
+
+#modal-overlay h2, #modal-overlay h3 {
+  color: hsl(0, 0%, 87%);
+}
+
+#modal-window {
+  align-self: baseline;
+  background-color: hsl(0,0%,20%);
+  position: relative;
+  top: 20%;
+  z-index: 101;
+  padding: 0.5em 2em 1.5em;
+  color: hsl(0, 0%, 74%);
+}
+
+#close-modal {
+  font-family: 'Roboto', sans-serif;
+  float: right;
+  font-size: 16px;
+  background-color: transparent;
+  color: hsl(201, 98%, 41%);
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  border-radius: 2px;
+  padding: 0.5em 1em;
+}
+
+#close-modal:focus {
+  border: 0px;
+  outline: none;
+}
+
+#close-modal:hover {
+  color: hsl(201, 98%, 49%);
+}
+
+#close-modal:active {
+  color: hsl(201, 98%, 33%);
+  background-color: hsl(0, 0%, 16%);
+}
+
+.help-text {
+  padding-top: 1em;
+  font-style: italic;
+}
+
+.help-text a {
+  text-decoration: none !important;
+}
+
 #game-controls, #game-settings {
   padding: 1rem;
   box-sizing: border-box;
