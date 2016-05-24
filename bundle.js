@@ -47,6 +47,7 @@
 	var Game = __webpack_require__(1);
 	
 	$(function () {
+	  $('body').addClass('no-select');
 	  var $root = $('#game');
 	
 	  // SPEED SETTINGS
@@ -741,7 +742,10 @@
 	
 	Piece.prototype.checkGameOver = function () {
 	  if (this.board.isGameOver()) {
-	    $('<div>').attr('id', 'gameover').text('GAME OVER').prependTo($('#grid'));
+	    $('<div>')
+	      .attr('id', 'gameover')
+	      .text('GAME OVER')
+	      .prependTo($('#grid'));
 	    $('<div>').addClass('overlay').prependTo($('#game'));
 	    $('.piece').removeClass('selected');
 	    $('.square').removeClass('valid-move');

@@ -1,6 +1,7 @@
 var Game = require('./game');
 
 $(function () {
+  $('body').addClass('no-select');
   var $root = $('#game');
 
   // SPEED SETTINGS

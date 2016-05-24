@@ -28,6 +28,15 @@ a {
   width: 480px;
 }
 
+.no-select {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge */
+  user-select: none;
+}
+
 #game {
   display: flex;
   align-items: center;
@@ -39,12 +48,6 @@ a {
 }
 
 #grid {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
   padding: 0;
   flex-shrink: 0;
   list-style: none;
@@ -80,6 +83,10 @@ a {
   margin: 0 0.5em;
   cursor: pointer;
 }
+
+ #game-settings .button {
+   font-size: 14px;
+ }
 
 #game-controls input:focus, #game-settings input:focus {
   border: 0px;
@@ -268,7 +275,7 @@ a {
   left: 0;
   width: 480px;
   height: 480px;
-  background-color: hsla(0, 0%, 0%, .3);
+  background-color: hsla(0, 0%, 0%, .4);
   display: flex;
   align-items: center;
   justify-content: center;
