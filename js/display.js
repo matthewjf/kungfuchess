@@ -123,7 +123,6 @@ function removePiece(pos) {
 }
 
 function renderTimer ($piece, timerAmount) {
-  // var $piece = $('div[pos="' + pos[0] + ',' + pos[1] + '"]');
   $piece.children().remove();
   var $timer = $('<div>')
     .addClass('timer')
