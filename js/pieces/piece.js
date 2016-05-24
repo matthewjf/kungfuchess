@@ -56,8 +56,7 @@ Piece.prototype.move = function (targetPos, renderCB) {
     }
 
     if (stopMoving) {
-      if (this.board.isGameOver())
-        $('<div>').attr('id', 'gameover').text('GAME OVER').prependTo($('#grid'));
+      this.checkGameOver();
       if (this.type() === 'Pawn' && (this.pos[0] === 7 || this.pos[0] === 0)) {
         this.board.promotePawn(this, renderCB);
       } else {
@@ -75,7 +74,16 @@ Piece.prototype.move = function (targetPos, renderCB) {
 Piece.prototype.setTimer = function () {
   setTimeout(function() {
     this.isMoveable = true;
-  }.bind(this), this.board.speed + Constants.MoveTime + 250);
+  }.bind(this), this.board.speed + Constants.MoveTime + 25);
+};
+
+Piece.prototype.checkGameOver = function () {
+  if (this.board.isGameOver()) {
+    $('<div>').attr('id', 'gameover').text('GAME OVER').prependTo($('#grid'));
+    $('<div>').addClass('overlay').prependTo($('#game'));
+    $('.piece').removeClass('selected');
+    $('.square').removeClass('valid-move');
+  }
 };
 
 Piece.STRAIGHTS = [[-1, 0], [1, 0], [0, -1], [0, 1]];

@@ -6,6 +6,11 @@ var greedyAI = require('./greedyAI');
 var AI = require('./AI');
 
 var Game = function($root) {
+  this.root = $root;
+  this.init(this.root);
+};
+
+Game.prototype.init = function ($root) {
   this.board = new Board();
   this.display = new Display($root, this.board);
   this.running = false;
@@ -16,11 +21,11 @@ var Game = function($root) {
   };
 
   this.renderBoard();
+  this.board.populate();
+  this.display.setup();
 };
 
 Game.prototype.play = function () {
-  this.board.populate();
-  this.display.setup();
   this.players.black.run();
   this.running = true;
 };

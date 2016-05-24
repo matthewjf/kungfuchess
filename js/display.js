@@ -14,6 +14,7 @@ Display.prototype.setup = function () {
 };
 
 Display.prototype.setGrid = function () {
+  $('#grid').empty();
   $('#grid').remove();
   this.$root.append('<ul>');
   $("ul").attr('id','grid').addClass('section');
@@ -134,7 +135,7 @@ function renderTimer (pos, timerAmount) {
     setTimeout(function() {
       $piece.children().remove();
     }, timerAmount);
-  }, Constants.MoveTime);
+  }, 25);
 }
 
 function removeSelected() {

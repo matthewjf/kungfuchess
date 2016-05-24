@@ -3,6 +3,7 @@ var Game = require('./game');
 $(function () {
   var $root = $('#game');
 
+  // SPEED SETTINGS
   var $settings = $('#game-settings');
   $settings.text('Speed');
   $('<div id="slow" class="setting button">').text('slow').appendTo($settings);
@@ -15,14 +16,18 @@ $(function () {
   $('.setting').prepend($('<div class="indicator"/>'));
   $('#medium').children('.indicator').addClass('active');
 
+
   var $controls = $('#game-controls');
+
+  // START
   $('<input id="start" type="button" value="start" />').click(function(event){
-    var $overlay = $('<div>').addClass('overlay').prependTo($('body'));
-    var $modal = $('<div>').addClass('modal').appendTo($overlay);
-    var $countdown = $('<div>')
-      .addClass('countdown')
-      .text('3')
-      .appendTo($modal);
+    game = new Game($root);
+
+    var $overlay = $('.overlay');
+    var $countdown = $('.countdown').text('3');
+
+    $('#start').prop('disabled', true);
+    $('.setting').addClass('disabled').off();
 
     setTimeout(function(){
       $countdown.text('2');
@@ -31,25 +36,37 @@ $(function () {
         setTimeout(function() {
           $overlay.empty();
           $overlay.remove();
+          game.play();
+          $('#reset').prop('disabled', false);
         }, 1000);
       }, 1000);
     }, 1000);
-
-    setTimeout(function(){
-      game.play();
-      $('#reset').prop('disabled', false);
-      $('#start').prop('disabled', true);
-    }, 3000);
   }).appendTo($controls);
+
+  // RESET
   $('<input id="reset" type="button" value="reset" disabled/>').click(function(){
+    $('.overlay').empty();
+    $('.overlay').remove();
     game.destroy();
     game = new Game($root);
+    var $overlay = $('<div>').addClass('overlay').appendTo('#game');
+    var $countdown = $('<div>')
+      .addClass('countdown')
+      .appendTo($overlay);
     $('#start').prop('disabled', false);
     $('#reset').prop('disabled', true);
+    $('.setting').removeClass('disabled').click(function(event) {
+      $('.indicator').removeClass('active');
+      $(event.currentTarget).children('.indicator').addClass('active');
+    });
   }).appendTo($controls);
+
+  // INFO
   $('<input id="info" type="button" value="info" />').click(function(){
     window.open('https://en.wikipedia.org/wiki/Kung-Fu_Chess');
   }).appendTo($controls);
 
   var game = new Game($root);
+  $('<div>').addClass('overlay').prependTo($('#game'));
+  $('<div>').addClass('countdown').appendTo($('.overlay'));
 });

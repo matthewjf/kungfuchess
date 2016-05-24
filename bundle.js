@@ -49,6 +49,7 @@
 	$(function () {
 	  var $root = $('#game');
 	
+	  // SPEED SETTINGS
 	  var $settings = $('#game-settings');
 	  $settings.text('Speed');
 	  $('<div id="slow" class="setting button">').text('slow').appendTo($settings);
@@ -61,14 +62,18 @@
 	  $('.setting').prepend($('<div class="indicator"/>'));
 	  $('#medium').children('.indicator').addClass('active');
 	
+	
 	  var $controls = $('#game-controls');
+	
+	  // START
 	  $('<input id="start" type="button" value="start" />').click(function(event){
-	    var $overlay = $('<div>').addClass('overlay').prependTo($('body'));
-	    var $modal = $('<div>').addClass('modal').appendTo($overlay);
-	    var $countdown = $('<div>')
-	      .addClass('countdown')
-	      .text('3')
-	      .appendTo($modal);
+	    game = new Game($root);
+	
+	    var $overlay = $('.overlay');
+	    var $countdown = $('.countdown').text('3');
+	
+	    $('#start').prop('disabled', true);
+	    $('.setting').addClass('disabled').off();
 	
 	    setTimeout(function(){
 	      $countdown.text('2');
@@ -77,27 +82,39 @@
 	        setTimeout(function() {
 	          $overlay.empty();
 	          $overlay.remove();
+	          game.play();
+	          $('#reset').prop('disabled', false);
 	        }, 1000);
 	      }, 1000);
 	    }, 1000);
-	
-	    setTimeout(function(){
-	      game.play();
-	      $('#reset').prop('disabled', false);
-	      $('#start').prop('disabled', true);
-	    }, 3000);
 	  }).appendTo($controls);
+	
+	  // RESET
 	  $('<input id="reset" type="button" value="reset" disabled/>').click(function(){
+	    $('.overlay').empty();
+	    $('.overlay').remove();
 	    game.destroy();
 	    game = new Game($root);
+	    var $overlay = $('<div>').addClass('overlay').appendTo('#game');
+	    var $countdown = $('<div>')
+	      .addClass('countdown')
+	      .appendTo($overlay);
 	    $('#start').prop('disabled', false);
 	    $('#reset').prop('disabled', true);
+	    $('.setting').removeClass('disabled').click(function(event) {
+	      $('.indicator').removeClass('active');
+	      $(event.currentTarget).children('.indicator').addClass('active');
+	    });
 	  }).appendTo($controls);
+	
+	  // INFO
 	  $('<input id="info" type="button" value="info" />').click(function(){
 	    window.open('https://en.wikipedia.org/wiki/Kung-Fu_Chess');
 	  }).appendTo($controls);
 	
 	  var game = new Game($root);
+	  $('<div>').addClass('overlay').prependTo($('#game'));
+	  $('<div>').addClass('countdown').appendTo($('.overlay'));
 	});
 
 
@@ -113,6 +130,11 @@
 	var AI = __webpack_require__(19);
 	
 	var Game = function($root) {
+	  this.root = $root;
+	  this.init(this.root);
+	};
+	
+	Game.prototype.init = function ($root) {
 	  this.board = new Board();
 	  this.display = new Display($root, this.board);
 	  this.running = false;
@@ -123,11 +145,11 @@
 	  };
 	
 	  this.renderBoard();
+	  this.board.populate();
+	  this.display.setup();
 	};
 	
 	Game.prototype.play = function () {
-	  this.board.populate();
-	  this.display.setup();
 	  this.players.black.run();
 	  this.running = true;
 	};
@@ -166,6 +188,7 @@
 	};
 	
 	Display.prototype.setGrid = function () {
+	  $('#grid').empty();
 	  $('#grid').remove();
 	  this.$root.append('<ul>');
 	  $("ul").attr('id','grid').addClass('section');
@@ -286,7 +309,7 @@
 	    setTimeout(function() {
 	      $piece.children().remove();
 	    }, timerAmount);
-	  }, Constants.MoveTime);
+	  }, 25);
 	}
 	
 	function removeSelected() {
@@ -313,7 +336,7 @@
 	  Queen: "♛",
 	  Rook: "♜",
 	  MoveTime: 500,
-	  Slow: 10000,
+	  Slow: 8000,
 	  Medium: 5000,
 	  Fast: 2000
 	};
@@ -695,8 +718,7 @@
 	    }
 	
 	    if (stopMoving) {
-	      if (this.board.isGameOver())
-	        $('<div>').attr('id', 'gameover').text('GAME OVER').prependTo($('#grid'));
+	      this.checkGameOver();
 	      if (this.type() === 'Pawn' && (this.pos[0] === 7 || this.pos[0] === 0)) {
 	        this.board.promotePawn(this, renderCB);
 	      } else {
@@ -714,7 +736,16 @@
 	Piece.prototype.setTimer = function () {
 	  setTimeout(function() {
 	    this.isMoveable = true;
-	  }.bind(this), this.board.speed + Constants.MoveTime + 250);
+	  }.bind(this), this.board.speed + Constants.MoveTime + 25);
+	};
+	
+	Piece.prototype.checkGameOver = function () {
+	  if (this.board.isGameOver()) {
+	    $('<div>').attr('id', 'gameover').text('GAME OVER').prependTo($('#grid'));
+	    $('<div>').addClass('overlay').prependTo($('#game'));
+	    $('.piece').removeClass('selected');
+	    $('.square').removeClass('valid-move');
+	  }
 	};
 	
 	Piece.STRAIGHTS = [[-1, 0], [1, 0], [0, -1], [0, 1]];
@@ -851,8 +882,10 @@
 	
 	  this.isMoveable = false;
 	
-	  if (this.board.isGameOver())
+	  if (this.board.isGameOver()) {
 	    $('<div>').attr('id', 'gameover').text('GAME OVER').prependTo($('#grid'));
+	    $('<div>').addClass('overlay').prependTo($('#game'));
+	  }
 	
 	  this.setTimer();
 	};
@@ -999,8 +1032,8 @@
 	      rook.isMoveable = false;
 	      setTimeout(function() {
 	        rook.isMoveable = true;
-	      }, this.board.speed + 550);
-	    }.bind(this), 550);
+	      }, this.board.speed + Constants.MoveTime + 25);
+	    }.bind(this), Constants.MoveTime + 25);
 	  }
 	  Piece.prototype.move.call(this, targetPos, renderCB);
 	};
