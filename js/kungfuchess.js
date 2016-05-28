@@ -7,7 +7,7 @@ $(function () {
 
   // SPEED SETTINGS
   var $settings = $('#game-settings');
-  $settings.text('Speed');
+  $settings.text('Speed   ');
   $('<div id="slow" class="setting button">').text('slow').appendTo($settings);
   $('<div id="normal" class="setting button">').text('normal').appendTo($settings);
   $('<div id="fast" class="setting button">').text('fast').appendTo($settings);

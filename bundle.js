@@ -53,7 +53,7 @@
 	
 	  // SPEED SETTINGS
 	  var $settings = $('#game-settings');
-	  $settings.text('Speed');
+	  $settings.text('Speed   ');
 	  $('<div id="slow" class="setting button">').text('slow').appendTo($settings);
 	  $('<div id="normal" class="setting button">').text('normal').appendTo($settings);
 	  $('<div id="fast" class="setting button">').text('fast').appendTo($settings);
@@ -693,6 +693,7 @@
 	};
 	
 	Piece.prototype.type = function () {
+	  console.log(this.constructor.name);
 	  return this.constructor.name;
 	};
 	
@@ -1223,17 +1224,20 @@
 	};
 	
 	AI.prototype.run = function () {
+	  // regular piece moves
 	  this.moveInterval = setInterval(function() {
 	    if (this.board.isGameOver())
 	      this.kill();
 	    var piece = this.findPiece();
 	
-	    if (piece && !(piece.type() === 'King')) {
+	    if (piece && (piece.type() !== 'King')) {
 	      var take = this.takeableMove(piece);
 	      var move = take ? take : this.randMove(piece);
 	      this.board.move(piece.pos, move, this.display.renderCB);
 	    }
 	  }.bind(this), (this.speed));
+	
+	  // protect king
 	  this.kingInterval = setInterval(function(){
 	    if (this.board.isGameOver())
 	      this.kill();
@@ -1248,6 +1252,7 @@
 	    clearInterval(this.kingInterval);
 	};
 	
+	// random move fallback
 	AI.prototype.randPiece = function () {
 	  var pieces = this.moveablePieces();
 	  var randPiece = pieces[Math.floor(Math.random()*pieces.length)];
@@ -1260,6 +1265,7 @@
 	  return randMove;
 	};
 	
+	// take pieces
 	AI.prototype.takeableKing = function (piece) {
 	  var move;
 	  for (var i = 0; i < piece.moves().length; i++) {
@@ -1305,6 +1311,7 @@
 	  return this.randPiece();
 	};
 	
+	// king stuff
 	AI.prototype.protectKing = function () {
 	  var kingThreat = this.findKingThreat();
 	  if (kingThreat) {
@@ -1331,6 +1338,7 @@
 	    return piece;
 	};
 	
+	// perform move
 	AI.prototype.takePiece = function (whitePiece) {
 	  var blackPieces = this.moveablePieces();
 	  for (var i = 0; i < blackPieces.length; i++) {
@@ -1342,6 +1350,7 @@
 	  }
 	};
 	
+	// helpers
 	AI.prototype.whiteMoves = function () {
 	  var whitePieces = this.board.whitePieces;
 	  var moves = [];

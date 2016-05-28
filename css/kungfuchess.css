@@ -14,7 +14,6 @@ h1 {
   text-align: center;
   font-size: 48px;
   background-color: hsl(0,0%,26%);
-  width: 480px;
   margin: 0.5em 0 0 0;
   padding: 0.5em 0;
 }
@@ -131,6 +130,7 @@ a {
   justify-content: space-around;
   margin-bottom: 2rem;
   color: white;
+  white-space: pre;
 }
 
 #game-controls input, #game-settings .button {
@@ -264,10 +264,6 @@ a {
   background-color: #8BC34A;
 }
 
-#slow {
-  margin-left: 1em !important;
-}
-
 .square {
   box-sizing: border-box;
   flex: 0 0 12.5%;
@@ -349,4 +345,60 @@ a {
   text-align: center;
   vertical-align: middle;
   font-family: 'Indie Flower', cursive;
+}
+
+.sm-flex-col, .sm-flex-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+@media screen and (max-height: 887px) and (min-width: 753px){
+  .sm-flex-col {
+    flex-direction: column-reverse;
+  }
+  .sm-flex-row {
+    flex-direction: row-reverse;
+  }
+  #game-controls, #game-settings {
+    flex-direction: column;
+    width: auto;
+    white-space: normal;
+  }
+  #game-settings {
+    margin-bottom: 0;
+    padding-top: 1em;
+    padding-bottom: 1.5em;
+  }
+  #game-controls {
+    padding-top: 1.5em;
+    padding-bottom: 1.5em;
+    margin-bottom: 80px;
+  }
+  #normal {
+    margin-top: 0.75em !important;
+    margin-bottom: 0.75em !important;
+  }
+  #reset {
+    margin-top: 1em !important;
+    margin-bottom: 1em !important;
+  }
+  #slow {
+    margin-top: 1.5em !important;
+  }
+  .button {
+    width: 90px;
+    margin-left: 8px !important;
+    margin-right: 8px !important;
+  }
+  input {
+    width: 118px;
+  }
+  h1.section {
+    width: 686px;
+  }
+  #game {
+    margin-right: 0;
+  }
 }

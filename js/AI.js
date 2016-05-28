@@ -17,17 +17,20 @@ AI.prototype.setSpeed = function (speed) {
 };
 
 AI.prototype.run = function () {
+  // regular piece moves
   this.moveInterval = setInterval(function() {
     if (this.board.isGameOver())
       this.kill();
     var piece = this.findPiece();
 
-    if (piece && !(piece.type() === 'King')) {
+    if (piece && (piece.type() !== 'King')) {
       var take = this.takeableMove(piece);
       var move = take ? take : this.randMove(piece);
       this.board.move(piece.pos, move, this.display.renderCB);
     }
   }.bind(this), (this.speed));
+
+  // protect king
   this.kingInterval = setInterval(function(){
     if (this.board.isGameOver())
       this.kill();
@@ -42,6 +45,7 @@ AI.prototype.kill = function () {
     clearInterval(this.kingInterval);
 };
 
+// random move fallback
 AI.prototype.randPiece = function () {
   var pieces = this.moveablePieces();
   var randPiece = pieces[Math.floor(Math.random()*pieces.length)];
@@ -54,6 +58,7 @@ AI.prototype.randMove = function (piece) {
   return randMove;
 };
 
+// take pieces
 AI.prototype.takeableKing = function (piece) {
   var move;
   for (var i = 0; i < piece.moves().length; i++) {
@@ -99,6 +104,7 @@ AI.prototype.findPiece = function () {
   return this.randPiece();
 };
 
+// king stuff
 AI.prototype.protectKing = function () {
   var kingThreat = this.findKingThreat();
   if (kingThreat) {
@@ -125,6 +131,7 @@ AI.prototype.threatensKing = function (piece) {
     return piece;
 };
 
+// perform move
 AI.prototype.takePiece = function (whitePiece) {
   var blackPieces = this.moveablePieces();
   for (var i = 0; i < blackPieces.length; i++) {
@@ -136,6 +143,7 @@ AI.prototype.takePiece = function (whitePiece) {
   }
 };
 
+// helpers
 AI.prototype.whiteMoves = function () {
   var whitePieces = this.board.whitePieces;
   var moves = [];

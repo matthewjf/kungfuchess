@@ -21,6 +21,7 @@ Piece.prototype.color = function () {
 };
 
 Piece.prototype.type = function () {
+  console.log(this.constructor.name);
   return this.constructor.name;
 };
 
