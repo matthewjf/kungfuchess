@@ -4,7 +4,7 @@
 
 [Live][gh-pages]
 
-[gh-pages]: matthewjf.github.io/kungfuchess
+[gh-pages]: http://matthewjf.github.io/kungfuchess
 
 Kungfu Chess is chess without turns. A copy of the original [Kung-Fu Chess](https://en.wikipedia.org/wiki/Kung-Fu_Chess) made my Shizmoo Games.
 
