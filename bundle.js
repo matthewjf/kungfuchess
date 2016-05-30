@@ -450,7 +450,6 @@
 	};
 	
 	Board.prototype.inBounds = function (pos) {
-	  console.log(pos);
 	  return (
 	    pos[0] >= 0 && pos[0] < 8 &&
 	    pos[1] >= 0 && pos[1] < 8
@@ -1228,11 +1227,13 @@
 	  this.moveInterval = setInterval(function() {
 	    if (this.board.isGameOver())
 	      this.kill();
-	    var piece = this.findPiece();
+	    var pieceMove = this.findPieceMove();
+	    if (pieceMove) {
+	      var piece = pieceMove[0];
+	      var move = pieceMove[1];
+	    }
 	
-	    if (piece && (piece.type() !== 'King')) {
-	      var take = this.takeableMove(piece);
-	      var move = take ? take : this.randMove(piece);
+	    if (piece) {
 	      this.board.move(piece.pos, move, this.display.renderCB);
 	    }
 	  }.bind(this), (this.speed));
@@ -1281,13 +1282,13 @@
 	AI.prototype.takeableMove = function (piece) {
 	  if (typeof piece === 'undefined' )
 	    return;
-	  var bestNet = -999;
+	  var bestNet = -5;
 	  var move;
 	  for (var i = 0; i < piece.moves().length; i++) {
 	    var currMove = piece.moves()[i];
 	
-	    if (this.board.hasPiece(move) && this.board.piece(move).color === 'white') {
-	      var targetVal = Constants.Values[this.board.piece(move).type()];
+	    if (this.board.hasPiece(currMove) && this.board.piece(currMove).color === 'white') {
+	      var targetVal = Constants.Values[this.board.piece(currMove).type()];
 	      var thisVal = Constants.Values[piece.type()];
 	      var currNet = targetVal - thisVal;
 	      if (currNet > bestNet) {
@@ -1297,7 +1298,10 @@
 	    }
 	  }
 	
-	  return move;
+	  if (move)
+	    return [move, bestNet];
+	  else
+	    return;
 	};
 	
 	AI.prototype.moveablePieces = function () {
@@ -1308,17 +1312,28 @@
 	  return pieces;
 	};
 	
-	AI.prototype.findPiece = function () {
+	AI.prototype.findPieceMove = function () {
 	  var pieces = this.moveablePieces();
 	
+	  var bestNet = -5;
+	  var move;
+	  var piece;
+	
 	  for (var i = 0; i < pieces.length; i++) {
-	    var move = this.takeableMove(pieces[i]);
-	    if (move) {
-	      return pieces[i];
+	    var curr = this.takeableMove(pieces[i]);
+	    if (curr && curr[1] > bestNet) {
+	      piece = pieces[i];
+	      move = curr[0];
+	      bestNet = curr[1];
 	    }
 	  }
 	
-	  return this.randPiece();
+	  if (!piece) {
+	    piece = this.randPiece();
+	    move = this.randMove(piece);
+	  }
+	
+	  return [piece, move];
 	};
 	
 	// king stuff
