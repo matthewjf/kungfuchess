@@ -27,7 +27,7 @@ AI.prototype.run = function () {
       var move = pieceMove[1];
     }
 
-    if (piece) {
+    if (piece && piece.type() !== "King") {
       this.board.move(piece.pos, move, this.display.renderCB);
     }
   }.bind(this), (this.speed));
@@ -55,9 +55,11 @@ AI.prototype.randPiece = function () {
 };
 
 AI.prototype.randMove = function (piece) {
-  var moves = piece.moves();
-  var randMove = moves[Math.floor(Math.random()*moves.length)];
-  return randMove;
+  if (piece) {
+    var moves = piece.moves();
+    var randMove = moves[Math.floor(Math.random()*moves.length)];
+    return randMove;
+  }
 };
 
 // take pieces
