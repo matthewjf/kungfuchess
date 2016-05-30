@@ -58,6 +58,7 @@ Board.prototype.addPiece = function (piece) {
 };
 
 Board.prototype.inBounds = function (pos) {
+  console.log(pos);
   return (
     pos[0] >= 0 && pos[0] < 8 &&
     pos[1] >= 0 && pos[1] < 8
