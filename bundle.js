@@ -1280,14 +1280,23 @@
 	AI.prototype.takeableMove = function (piece) {
 	  if (typeof piece === 'undefined' )
 	    return;
-	
+	  var bestNet = -999;
 	  var move;
 	  for (var i = 0; i < piece.moves().length; i++) {
-	    move = piece.moves()[i];
+	    var currMove = piece.moves()[i];
+	
 	    if (this.board.hasPiece(move) && this.board.piece(move).color === 'white') {
-	      return move;
+	      var targetVal = Constants.Values[this.board.piece(move).type()];
+	      var thisVal = Constants.Values[piece.type()];
+	      var currNet = targetVal - thisVal;
+	      if (currNet > bestNet) {
+	        bestNet = currNet;
+	        move = currMove;
+	      }
 	    }
 	  }
+	
+	  return move;
 	};
 	
 	AI.prototype.moveablePieces = function () {
@@ -1300,6 +1309,7 @@
 	
 	AI.prototype.findPiece = function () {
 	  var pieces = this.moveablePieces();
+	
 	  for (var i = 0; i < pieces.length; i++) {
 	    var move = this.takeableMove(pieces[i]);
 	    if (move) {
@@ -1337,6 +1347,23 @@
 	    return piece;
 	};
 	
+	AI.prototype.safeKingPos = function() {
+	  var unsafePos = this.whiteMoves();
+	  var kingMoves = this.board.king('black').moves();
+	  for (var i = 0; i < kingMoves.length; i++) {
+	    if (!Util.includesPos(kingMoves[i], unsafePos)) {
+	      return kingMoves[i];
+	    }
+	  }
+	};
+	
+	AI.prototype.moveKingSafety = function () {
+	  var kingPos = this.board.findKing('black');
+	  var safePos = this.safeKingPos();
+	  if (safePos)
+	    this.board.move(kingPos, safePos, this.display.renderCB);
+	};
+	
 	// perform move
 	AI.prototype.takePiece = function (whitePiece) {
 	  var blackPieces = this.moveablePieces();
@@ -1358,23 +1385,6 @@
 	  });
 	
 	  return moves;
-	};
-	
-	AI.prototype.safeKingPos = function() {
-	  var unsafePos = this.whiteMoves();
-	  var kingMoves = this.board.king('black').moves();
-	  for (var i = 0; i < kingMoves.length; i++) {
-	    if (!Util.includesPos(kingMoves[i], unsafePos)) {
-	      return kingMoves[i];
-	    }
-	  }
-	};
-	
-	AI.prototype.moveKingSafety = function () {
-	  var kingPos = this.board.findKing('black');
-	  var safePos = this.safeKingPos();
-	  if (safePos)
-	    this.board.move(kingPos, safePos, this.display.renderCB);
 	};
 	
 	module.exports = AI;
