@@ -77,5 +77,7 @@ The AI runs 2 intervals to make moves. One interval runs every half second and a
 The second interval will move other pieces according to the following logic and runs every second:
 
 - Take the opponent's King if any piece can
-- Take a black piece if any piece can
+- For each piece that can take another piece
+  - Evaluate the greatest net value for the piece's moves
+  - Move the piece with the greatest potential gain in value
 - Select a random piece and make a random move for that piece
