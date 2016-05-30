@@ -1,7 +1,6 @@
 
 
 # Kungfu Chess
-[Link](http://matthewjf.github.io/kungfuchess/ target="_blank")
 
 <a href="http://matthewjf.github.io/kungfuchess" target="_blank">Live</a>
 
