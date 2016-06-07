@@ -100,14 +100,6 @@ AI.prototype.takeableMove = function (piece) {
     return;
 };
 
-AI.prototype.moveablePieces = function () {
-  var pieces = this.board.blackPieces.filter(function(piece) {
-    return (piece.isMoveable && piece.moves().length > 0);
-  });
-
-  return pieces;
-};
-
 AI.prototype.findPieceMove = function () {
   var pieces = this.moveablePieces();
 
@@ -197,6 +189,14 @@ AI.prototype.whiteMoves = function () {
   });
 
   return moves;
+};
+
+AI.prototype.moveablePieces = function () {
+  var pieces = this.board.blackPieces.filter(function(piece) {
+    return (piece.isMoveable && piece.moves().length > 0);
+  });
+
+  return pieces;
 };
 
 module.exports = AI;
